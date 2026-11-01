@@ -89,7 +89,7 @@ export const site = Object.freeze({
       id: 'client32',
       title: 'WoW Classic Plus LK — 32-bit',
       subtitle: 'Traditional client',
-      status: pick('VITE_DOWNLOAD_32_STATUS', RELEASE.COMING_SOON),
+      status: pick('VITE_DOWNLOAD_32_STATUS', RELEASE.AVAILABLE),
       url: pick('VITE_DOWNLOAD_32_URL', ''),
       platforms: ['windows', 'linux']
     },
@@ -103,9 +103,12 @@ export const site = Object.freeze({
     }
   },
 
+  /** The launcher installs the game (36 GB) and keeps it updated. */
   launcher: {
-    status: pick('VITE_LAUNCHER_STATUS', RELEASE.COMING_SOON),
-    url: pick('VITE_LAUNCHER_URL', '')
+    status: pick('VITE_LAUNCHER_STATUS', RELEASE.AVAILABLE),
+    version: '0.1.0',
+    windowsUrl: pick('VITE_LAUNCHER_WINDOWS_URL', 'https://drive.google.com/file/d/1qbHdMEk84aFGBqBRuton7mHzPtIm2uoJ/view?usp=sharing'),
+    linuxUrl: pick('VITE_LAUNCHER_LINUX_URL', 'https://drive.google.com/file/d/1O-xpCmca_a3BG3z4v4_CxmbxTSV7llkp/view?usp=sharing')
   },
 
   /** Upscaling technologies for the 64-bit client. Update the stage as work progresses. */

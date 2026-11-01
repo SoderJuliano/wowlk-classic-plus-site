@@ -4,17 +4,14 @@ import { site, RELEASE } from '../config/site.js'
 const state = reactive({ open: false, clientId: null })
 
 /**
- * Single entry point for every "Download" button.
- * If the client is available AND has a configured URL, navigate to it.
- * Otherwise open the "downloads are being prepared" dialog — never a fake link.
+ * Single entry point for every "Download" button. Opens the dialog, which shows the
+ * launcher downloads (Windows / Linux) when available, or the "coming soon" message
+ * for clients that are not released yet (e.g. 64-bit).
  */
+export const launcherReady = () => site.launcher.status === RELEASE.AVAILABLE && !!(site.launcher.windowsUrl || site.launcher.linuxUrl)
+
 export function useDownloadModal() {
   function requestDownload(clientId = null) {
-    const client = clientId ? site.downloads[clientId] : null
-    if (client && client.status !== RELEASE.COMING_SOON && client.url) {
-      window.location.assign(client.url)
-      return
-    }
     state.clientId = clientId
     state.open = true
   }

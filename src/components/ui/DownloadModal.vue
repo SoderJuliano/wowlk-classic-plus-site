@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, computed, nextTick } from 'vue'
-import { useDownloadModal } from '../../composables/useDownloadModal.js'
+import { useDownloadModal, launcherReady } from '../../composables/useDownloadModal.js'
 import { site } from '../../config/site.js'
 import { subscribeToDownloads } from '../../services/accountService.js'
 import { createBotGuard } from '../../utils/botGuard.js'
@@ -18,6 +18,8 @@ const error = ref('')
 let guard = createBotGuard()
 
 const client = computed(() => (state.clientId ? site.downloads[state.clientId] : null))
+// Launcher downloads apply to everything except a client that is still coming soon.
+const showLauncher = computed(() => launcherReady() && (!client.value || client.value.status !== 'coming-soon'))
 
 watch(
   () => state.open,
@@ -56,6 +58,32 @@ function onBackdrop(e) { if (e.target === dialog.value) close() }
 
       <div class="dlg__icon"><AppIcon name="snowflake" :size="34" /></div>
       <p class="eyebrow">Downloads</p>
+
+      <template v-if="showLauncher">
+        <h2 id="dlg-title" class="dlg__title gold-text">Download the Launcher</h2>
+        <p class="dlg__msg">
+          The OLK Plus Launcher installs the game (about 36 GB), sets the realmlist and keeps everything updated.
+          Launcher v{{ site.launcher.version }}.
+        </p>
+        <div class="dlg__plats">
+          <a v-if="site.launcher.windowsUrl" :href="site.launcher.windowsUrl" class="btn btn--frost btn--block" target="_blank" rel="noopener noreferrer">
+            <AppIcon name="windows" /> Windows
+          </a>
+          <a v-if="site.launcher.linuxUrl" :href="site.launcher.linuxUrl" class="btn btn--gold btn--block" target="_blank" rel="noopener noreferrer">
+            <AppIcon name="linux" /> Linux (AppImage)
+          </a>
+        </div>
+        <ul class="dlg__tips">
+          <li><b>Windows:</b> if you see "Windows protected your PC", click <i>More info</i> → <i>Run anyway</i> (the launcher is not code-signed yet).</li>
+          <li><b>Linux:</b> <code>chmod +x OLK-Plus-Launcher-*.AppImage</code> and run it. Wine is required to play.</li>
+          <li>Google Drive may show a "can't scan for viruses" notice for large files — click <i>Download anyway</i>.</li>
+        </ul>
+        <RouterLink class="btn btn--ghost btn--block" :to="{ name: 'register' }" @click="close">
+          <AppIcon name="user" /> No account yet? Create one
+        </RouterLink>
+      </template>
+
+      <template v-else>
       <h2 id="dlg-title" class="dlg__title gold-text">The gates are not open yet</h2>
 
       <p v-if="client" class="dlg__client">
@@ -87,6 +115,7 @@ function onBackdrop(e) { if (e.target === dialog.value) close() }
         </button>
       </form>
       <p v-if="error" id="dlg-err" class="field-error" role="alert">{{ error }}</p>
+      </template>
     </div>
   </dialog>
 </template>
@@ -106,6 +135,11 @@ function onBackdrop(e) { if (e.target === dialog.value) close() }
 .dlg__sep { display: flex; align-items: center; gap: 12px; margin: 22px 0 16px; color: var(--text-400); font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; }
 .dlg__sep::before, .dlg__sep::after { content: ''; flex: 1; height: 1px; background: var(--line); }
 .dlg__form { display: flex; gap: 10px; }
+.dlg__plats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.dlg__tips { text-align: left; margin: 0 0 18px; padding: 12px 14px 12px 30px; border-radius: 4px; background: rgba(3, 6, 10, .5); border: 1px solid var(--line); color: var(--text-300); font-size: .82rem; display: grid; gap: 6px; }
+.dlg__tips b { color: var(--text-100); }
+.dlg__tips code { color: var(--gold-200); font-size: .9em; }
+@media (max-width: 460px) { .dlg__plats { grid-template-columns: 1fr; } }
 .dlg__form .input { flex: 1; }
 .dlg__form .btn { --h: 48px; }
 .field-error { margin-top: 8px; }

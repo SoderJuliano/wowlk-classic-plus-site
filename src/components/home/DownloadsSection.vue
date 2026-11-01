@@ -39,7 +39,7 @@ const PLATFORM = { windows: 'Windows', linux: 'Linux' }
             @click="requestDownload(c.id)"
           >
             <AppIcon name="download" />
-            {{ c.status === RELEASE.COMING_SOON || !c.url ? 'Notify me at launch' : 'Download' }}
+            {{ c.status === RELEASE.COMING_SOON ? 'Notify me at launch' : 'Download launcher' }}
           </button>
         </article>
       </div>

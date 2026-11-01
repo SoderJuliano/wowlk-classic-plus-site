@@ -5,7 +5,7 @@ import AppIcon from '../ui/AppIcon.vue'
 import StageBadge from '../ui/StageBadge.vue'
 import SiteLogo from '../ui/SiteLogo.vue'
 
-const ready = computed(() => site.launcher.status === RELEASE.AVAILABLE && !!site.launcher.url)
+const ready = computed(() => site.launcher.status === RELEASE.AVAILABLE && !!(site.launcher.windowsUrl || site.launcher.linuxUrl))
 const perks = [
   { icon: 'download', text: 'Simplified installation' },
   { icon: 'refresh', text: 'Automatic updates' },
@@ -27,7 +27,10 @@ const perks = [
           <li v-for="p in perks" :key="p.text"><AppIcon :name="p.icon" :size="18" /> {{ p.text }}</li>
         </ul>
 
-        <a v-if="ready" :href="site.launcher.url" class="btn btn--frost btn--lg"><AppIcon name="download" /> Download Launcher</a>
+        <div v-if="ready" class="lnc__dl">
+          <a v-if="site.launcher.windowsUrl" :href="site.launcher.windowsUrl" class="btn btn--frost btn--lg" target="_blank" rel="noopener noreferrer"><AppIcon name="windows" /> Windows</a>
+          <a v-if="site.launcher.linuxUrl" :href="site.launcher.linuxUrl" class="btn btn--gold btn--lg" target="_blank" rel="noopener noreferrer"><AppIcon name="linux" /> Linux</a>
+        </div>
         <span v-else class="has-tooltip">
           <button type="button" class="btn btn--frost btn--lg" disabled aria-describedby="lnc-tip">
             <AppIcon name="lock" /> Download Launcher
@@ -69,6 +72,7 @@ const perks = [
 .lnc__perks { list-style: none; padding: 0; margin: 22px 0 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
 .lnc__perks li { display: flex; gap: 10px; align-items: center; color: var(--text-100); font-size: .94rem; }
 .lnc__perks svg { color: var(--ice-300); flex: none; }
+.lnc__dl { display: flex; flex-wrap: wrap; gap: 12px; }
 
 .mock { position: relative; border-radius: 10px; overflow: hidden; background: #070d15; border: 1px solid rgba(212, 168, 69, .35); box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .9), 0 0 60px -20px var(--ice-glow); transform: perspective(1400px) rotateY(-8deg) rotateX(3deg); transition: transform .6s var(--ease); }
 .mock:hover { transform: perspective(1400px) rotateY(-3deg) rotateX(1deg); }
