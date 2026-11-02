@@ -14,7 +14,10 @@ export async function fetchRealmStatus() {
   }
   if (!site.realm.statusUrl) return fallback
   try {
-    const res = await fetch(site.realm.statusUrl, { headers: { Accept: 'application/json' } })
+    const res = await fetch(site.realm.statusUrl, {
+      headers: { Accept: 'application/json', 'ngrok-skip-browser-warning': 'true' }, // API behind a free ngrok tunnel
+      signal: AbortSignal.timeout(10_000)
+    })
     if (!res.ok) throw new Error(String(res.status))
     const d = await res.json()
     return {
@@ -24,6 +27,7 @@ export async function fetchRealmStatus() {
       totalAccounts: Number.isFinite(d.totalAccounts) ? d.totalAccounts : null
     }
   } catch {
-    return { ...fallback, error: true }
+    // The feed runs on the same PC as the realm: if it does not answer, do not claim the realm is online.
+    return { ...fallback, status: 'offline', error: true }
   }
 }

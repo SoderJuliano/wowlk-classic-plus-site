@@ -48,7 +48,7 @@ const fmt = (n) => (n == null ? '—' : new Intl.NumberFormat('en-US').format(n)
       </div>
       <p class="status__note">
         <AppIcon name="info" :size="14" />
-        <template v-if="data.live">Live data from the {{ site.game.core }} realm.</template>
+        <template v-if="data.live">Live data from the {{ site.game.core }} realm, counting our 20 resident bots.</template>
         <template v-else>Live player and account counts will appear here once the realm statistics feed is connected. No numbers are simulated.</template>
       </p>
     </div>

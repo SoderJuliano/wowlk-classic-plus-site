@@ -52,7 +52,8 @@ FSR/DLSS list are also in `site.js` — update them as the project moves.
 
 Realm status: without `VITE_STATUS_URL` the site shows the configured state and `—` for
 players/accounts with a "pre-launch, no numbers are simulated" note. With it, it fetches
-`{ online, playersOnline, totalAccounts }` every 60 s.
+`{ online, playersOnline, totalAccounts }` every 60 s. Pikachu serves it at `/launcher/v1/status`
+(both counts include the 20 resident bots).
 
 ## Accounts — how it works
 

@@ -23,6 +23,10 @@ const features = [
     text: 'Professions received new mechanics to stay relevant throughout your progression. Blacksmiths can now recycle armor pieces — see it in the video below.'
   },
   {
+    icon: 'users', title: 'New Race & Class Combinations',
+    text: 'Play combinations the original game never offered: Tauren Paladin, Troll Druid, Gnome Priest, Undead Paladin, Blood Elf Warrior, Human Hunter and Dwarf Shaman or Warlock — see it in the video below.'
+  },
+  {
     icon: 'hourglass', title: 'Original XP Progression',
     text: 'Experience rates keep the original pace and soul of Wrath leveling. This is not — and will not become — an instant-level or high-rate server.'
   },
@@ -63,6 +67,23 @@ const features = [
           <ul>
             <li><AppIcon name="hammer" :size="18" /> New armor recycling mechanic</li>
             <li><AppIcon name="bag" :size="18" /> Reworked vendor items</li>
+            <li><AppIcon name="check" :size="18" /> Traditional 32-bit client — ready</li>
+          </ul>
+        </div>
+      </div>
+
+      <div v-reveal class="showcase">
+        <VideoEmbed v-bind="site.videos.newClasses" />
+        <div class="showcase__copy">
+          <p class="eyebrow">See it in game</p>
+          <h3 class="title-lg gold-text">New Classes for Each Race</h3>
+          <p>
+            Recorded on the ready-to-play 32-bit client: new race and class combinations, each with its starting
+            gear and trainers.
+          </p>
+          <ul>
+            <li><AppIcon name="users" :size="18" /> Tauren Paladin, Troll Druid and Gnome Priest</li>
+            <li><AppIcon name="sword" :size="18" /> Full class abilities and attributes</li>
             <li><AppIcon name="check" :size="18" /> Traditional 32-bit client — ready</li>
           </ul>
         </div>

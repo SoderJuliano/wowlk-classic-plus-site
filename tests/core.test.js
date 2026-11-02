@@ -240,3 +240,25 @@ describe('web session', () => {
     expect(s.session.value).toBeNull()
   })
 })
+
+describe('realm status', () => {
+  const load = async () => {
+    vi.resetModules()
+    vi.stubEnv('VITE_STATUS_URL', 'https://api.test/launcher/v1/status')
+    vi.stubEnv('VITE_REALM_STATUS', 'online')
+    return import('../src/services/statusService.js')
+  }
+  afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs() })
+
+  it('shows the live numbers', async () => {
+    const { fetchRealmStatus } = await load()
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ online: true, playersOnline: 20, totalAccounts: 22 }))))
+    expect(await fetchRealmStatus()).toMatchObject({ live: true, status: 'online', playersOnline: 20, totalAccounts: 22 })
+  })
+
+  it('does not claim online when the feed is down', async () => {
+    const { fetchRealmStatus } = await load()
+    vi.stubGlobal('fetch', vi.fn(async () => { throw new TypeError('offline') }))
+    expect(await fetchRealmStatus()).toMatchObject({ live: false, status: 'offline', playersOnline: null })
+  })
+})

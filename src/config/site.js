@@ -77,6 +77,11 @@ export const site = Object.freeze({
       title: 'Blacksmithing mechanics & reworked vendor items',
       caption: '32-bit client (ready) — Blacksmiths can now recycle armor, plus reworked items on a vendor.'
     },
+    newClasses: {
+      id: '-jgutEQ9jNo',
+      title: 'New classes for each race',
+      caption: '32-bit client — the new race and class combinations, in game.'
+    },
     nativeLinux: {
       id: 'S2MQICTyLmI',
       title: 'Native Linux 64-bit client — early build',
