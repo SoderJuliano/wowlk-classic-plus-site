@@ -117,3 +117,52 @@ describe('account service payloads', () => {
     expect(JSON.parse(new TextDecoder().decode(plain))).toEqual({ secret: 'arthas@lordaeron.com' })
   })
 })
+
+describe('login (Pikachu API)', () => {
+  const importWithApi = async () => {
+    vi.resetModules()
+    vi.stubEnv('VITE_AUTH_API_URL', 'https://api.test/launcher/v1')
+    return import('../src/services/accountService.js')
+  }
+  const reply = (status, body) => vi.fn(async () => new Response(typeof body === 'string' ? body : JSON.stringify(body), { status }))
+  afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs() })
+
+  it('posts {login, password} with the ngrok header and no cookies', async () => {
+    const { login } = await importWithApi()
+    const fetchMock = reply(200, { access_token: 'a_x', user: { id: 1, username: 'ARTHAS' } })
+    vi.stubGlobal('fetch', fetchMock)
+    const session = await login({ login: ' arthas ', password: 'Frostmourne1' })
+    const [url, init] = fetchMock.mock.calls[0]
+    expect(url).toBe('https://api.test/launcher/v1/auth/login')
+    expect(JSON.parse(init.body)).toEqual({ login: 'arthas', password: 'Frostmourne1' })
+    expect(init.headers['ngrok-skip-browser-warning']).toBe('true')
+    expect(init.credentials).toBeUndefined()
+    expect(session.user.username).toBe('ARTHAS')
+  })
+
+  it('does not treat a 200 HTML page from the tunnel as a login', async () => {
+    const { login } = await importWithApi()
+    vi.stubGlobal('fetch', reply(200, '<!doctype html><html></html>'))
+    await expect(login({ login: 'a', password: 'b' })).rejects.toMatchObject({ code: 'LOGIN_UNREACHABLE' })
+  })
+
+  it('separates wrong password, banned, rate limit and server problems', async () => {
+    const { login } = await importWithApi()
+    const cases = [
+      [401, { error: { code: 'INVALID_CREDENTIALS', message: 'x' } }, 'INVALID_CREDENTIALS'],
+      [403, { error: { code: 'ACCOUNT_BANNED', message: 'This account is banned.' } }, 'ACCOUNT_BANNED'],
+      [429, { error: { code: 'RATE_LIMITED', message: 'x' } }, 'RATE_LIMITED'],
+      [500, { error: { code: 'INTERNAL', message: 'x' } }, 'INTERNAL']
+    ]
+    for (const [status, body, code] of cases) {
+      vi.stubGlobal('fetch', reply(status, body))
+      await expect(login({ login: 'a', password: 'b' })).rejects.toMatchObject({ code })
+    }
+  })
+
+  it('reports a network failure as unreachable, not as a wrong password', async () => {
+    const { login } = await importWithApi()
+    vi.stubGlobal('fetch', vi.fn(async () => { throw new TypeError('offline') }))
+    await expect(login({ login: 'a', password: 'b' })).rejects.toMatchObject({ code: 'LOGIN_UNREACHABLE' })
+  })
+})

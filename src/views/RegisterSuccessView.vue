@@ -1,50 +1,20 @@
 <script setup>
-import { ref, computed } from 'vue'
 import AuthLayout from '../components/auth/AuthLayout.vue'
 import AppIcon from '../components/ui/AppIcon.vue'
-import { resendVerification } from '../services/accountService.js'
-import { cooldownRemaining, markCooldown } from '../utils/botGuard.js'
-
-const email = ref(typeof history !== 'undefined' ? history.state?.email ?? '' : '')
-const masked = computed(() => email.value.replace(/^(.{2})[^@]*(@.*)$/, '$1•••$2'))
-const state = ref('idle') // idle | sending | sent | error
-const msg = ref('')
-
-async function resend() {
-  const wait = cooldownRemaining('resend', 60_000)
-  if (wait) { state.value = 'error'; msg.value = `You can request another e-mail in ${Math.ceil(wait / 1000)}s.`; return }
-  state.value = 'sending'
-  try {
-    await resendVerification({ email: email.value })
-    markCooldown('resend')
-    state.value = 'sent'
-  } catch {
-    state.value = 'error'; msg.value = 'Could not send the request. Please try again shortly.'
-  }
-}
 </script>
 
 <template>
   <AuthLayout title="Your Journey Begins" subtitle="Registration received.">
     <div class="ok">
-      <div class="ok__icon"><AppIcon name="mail" :size="34" /></div>
-      <p>
-        We're preparing your account. A verification e-mail will be sent
-        <template v-if="email"> to <strong>{{ masked }}</strong></template> shortly.
-      </p>
+      <div class="ok__icon"><AppIcon name="check" :size="34" /></div>
+      <p>We're creating your account. It will be ready in about 2 minutes, with no further steps.</p>
       <ol class="ok__steps">
-        <li>Open the e-mail from WoW Classic Plus LK.</li>
-        <li>Click the verification link (limited validity, single use).</li>
-        <li>Your game account is activated once our server confirms it.</li>
+        <li>Wait about 2 minutes.</li>
+        <li>Sign in with the launcher (or the game) using your username and password.</li>
+        <li>Start your adventure!</li>
       </ol>
-      <p class="ok__small">Didn't get it? Check your spam folder. If the username or e-mail is already taken, the e-mail will tell you.</p>
-
-      <p v-if="state === 'sent'" class="alert alert--success" role="status">New verification e-mail requested.</p>
-      <p v-else-if="state === 'error'" class="alert alert--error" role="alert">{{ msg }}</p>
-      <button v-if="email && state !== 'sent'" type="button" class="btn btn--ghost btn--block" :disabled="state === 'sending'" @click="resend">
-        <AppIcon name="refresh" /> Resend verification e-mail
-      </button>
-      <RouterLink v-else-if="!email" :to="{ name: 'verify-email' }" class="btn btn--ghost btn--block"><AppIcon name="refresh" /> Resend verification e-mail</RouterLink>
+      <p class="ok__small">We also send a confirmation e-mail. If you can't sign in after a few minutes, the username or e-mail may already be in use: check your inbox and spam folder, or register again with a different username.</p>
+      <RouterLink :to="{ name: 'login' }" class="btn btn--ghost btn--block">Log In</RouterLink>
       <RouterLink to="/" class="btn btn--gold btn--block ok__home">Back to Home</RouterLink>
     </div>
   </AuthLayout>

@@ -31,7 +31,7 @@ const isTerms = computed(() => route.name === 'terms')
         <h2>What we collect</h2>
         <p>Your username, e-mail address, an SRP6 password verifier (your password itself is never transmitted or stored), the time you accepted the terms and your notification preference.</p>
         <h2>Why</h2>
-        <p>To create and secure your game account, verify your e-mail, recover access and — if you opt in — notify you when downloads become available.</p>
+        <p>To create and secure your game account, send you account notices, recover access and — if you opt in — notify you when downloads become available.</p>
         <h2>What we never do</h2>
         <p>We do not sell your data or use it for advertising.</p>
         <h2>Your rights</h2>

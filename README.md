@@ -16,7 +16,7 @@ npm run preview
 ```
 
 Hosting: any static host (Netlify, Vercel, Nginx). Configure the SPA fallback so
-`/register`, `/verify-email`, etc. resolve to `index.html`
+`/register`, `/login`, etc. resolve to `index.html`
 (Netlify: `/* /index.html 200`; Nginx: `try_files $uri /index.html;`).
 
 ## Configuration
@@ -41,7 +41,7 @@ Gameplay videos (YouTube IDs) are in `site.videos`; they load only when the visi
 | Download status + URLs (32/64-bit) | `VITE_DOWNLOAD_32_STATUS`, `VITE_DOWNLOAD_64_STATUS`, `…_URL` |
 | Launcher status + URL | `VITE_LAUNCHER_STATUS`, `VITE_LAUNCHER_URL` |
 | Queue keys / encryption | `VITE_QUEUE_REGISTRATION_KEY`, `VITE_QUEUE_EVENTS_KEY`, `VITE_QUEUE_PUBLIC_KEY` |
-| Login backend (optional) | `VITE_AUTH_API_URL` |
+| Login API (Pikachu) | `VITE_AUTH_API_URL` |
 
 Statuses: `coming-soon` | `early-access` | `available`. A download/launcher button only links
 somewhere when its status is not `coming-soon` **and** a URL is set; otherwise it opens the
@@ -60,19 +60,16 @@ players/accounts with a "pre-launch, no numbers are simulated" note. With it, it
 Register form ─▶ honeypot + fill-time check (no request if it trips)
               ─▶ validation ─▶ SRP6 salt/verifier computed in the browser
               ─▶ POST Abra API /notifications  key = wow-classic-plus-lk
-Game server worker polls the key ─▶ creates the AzerothCore account (locked)
-              ─▶ e-mails a server-generated verification link
-/verify-email?u=…&t=… ─▶ user clicks "Confirm" ─▶ event queued ─▶ worker validates & unlocks
+Pikachu worker polls the key every 2 min ─▶ creates the AzerothCore account (active)
+              ─▶ plain-text "account activated" e-mail
 ```
 
-- The plain password never leaves the browser; the message carries the same SRP6
+- The plain password never leaves the browser on sign-up; the message carries the same SRP6
   `salt`/`verifier` AzerothCore stores (no BCrypt, no incompatible hash).
-- Verification and reset tokens are generated, hashed, expired and single-used by the
-  **server worker** — the browser only relays what the user received. This is what makes
-  the e-mail verification real.
-- Full message format, SQL, token table, abuse rules and decryption code:
-  **[`docs/QUEUE_CONTRACT.md`](docs/QUEUE_CONTRACT.md)**.
-- Branded HTML e-mails for the worker: `scripts/email-templates.mjs`.
+- A player can log in about 2 minutes after registering; there is no e-mail verification step.
+- Password recovery pages publish events, but **nothing processes them yet** (see the contract).
+- Full message format and abuse rules: **[`docs/QUEUE_CONTRACT.md`](docs/QUEUE_CONTRACT.md)**.
+- Branded HTML e-mails for later use: `scripts/email-templates.mjs`.
 
 ### Strongly recommended before going live
 
@@ -83,10 +80,10 @@ Game server worker polls the key ─▶ creates the AzerothCore account (locked)
 
 ### Login
 
-A queue can't answer "is this password right?" synchronously, so the login page is fully
-built but tells users the portal opens at launch. Set `VITE_AUTH_API_URL` to a backend
-exposing `POST /auth/login` (httpOnly session cookie, rate-limited, SRP6 check against
-`acore_auth`) and it starts working.
+The login page calls the Pikachu API directly. Set `VITE_AUTH_API_URL` to
+`https://<pikachu-host>/launcher/v1`; without it the page says web login is unavailable.
+`POST /auth/login` takes `{ login, password }` (username or e-mail) and returns tokens in the
+body, with no cookies. The site only confirms the login for now: it does not keep the session.
 
 ## Structure
 

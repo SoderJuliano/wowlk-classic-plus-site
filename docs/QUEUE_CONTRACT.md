@@ -14,7 +14,7 @@ Browser ──POST /notifications──▶ Abra API ◀──GET /notifications/
 | Key (`.env`: `VITE_QUEUE_*_KEY`) | Content                                                       |
 |---------------------------------|---------------------------------------------------------------|
 | `VITE_QUEUE_REGISTRATION_KEY`   | `account.register` only — the account-creation array          |
-| `VITE_QUEUE_EVENTS_KEY`         | `account.verify`, `account.verify.resend`, `password.reset.request`, `password.reset`, `downloads.subscribe` |
+| `VITE_QUEUE_EVENTS_KEY`         | `password.reset.request`, `password.reset`, `downloads.subscribe` |
 
 ## Polling
 
@@ -64,58 +64,31 @@ encrypted envelope (see bottom).
 computed in the browser from `UPPER(username):UPPER(password)`. Verified in the test
 suite against an independent implementation of `SRP6.cpp`.
 
-Worker steps:
+Worker (Pikachu, module `wowlk`, polls every 2 minutes):
 
-1. Re-validate everything (never trust the browser): username `^[A-Z0-9]{3,16}$`, e-mail
-   format/length, hex lengths, `expansion` = 2.
-2. Rate-limit / abuse checks (see below). Discard silently if abusive.
-3. Uniqueness: `SELECT 1 FROM account WHERE username = ? OR email = ?`.
-   On conflict, e-mail the address explaining the name/e-mail is taken (do not leak which).
-4. Create the account **locked until the e-mail is verified**:
+1. Re-validates everything (never trust the browser): username `^[A-Z0-9]{3,16}$`, e-mail
+   format/length, hex lengths, `expansion` = 2. Invalid → apology e-mail, message removed.
+2. Uniqueness: username or e-mail in use → e-mail saying so (does not leak which), message removed.
+3. Creates the account **active**, as a regular player (no `account_access` row):
 
    ```sql
    INSERT INTO account (username, salt, verifier, email, reg_mail, expansion, locked, joindate)
-   VALUES (?, UNHEX(?), UNHEX(?), ?, ?, 2, 1, NOW());
+   VALUES (?, ?, ?, ?, ?, 2, 0, NOW());
    ```
 
-5. Generate the verification token **on the server**: 32 random bytes, base64url. Store only
-   `SHA-256(token)`, the account id and an expiry (e.g. 24 h) in a site-owned table, e.g.
+4. Sends a plain-text "account activated" e-mail through
+   `POST https://abra-api.top/email/send-email/{email}/{message}/{subject}` and deletes the message by id.
+5. Temporary errors keep the message queued for the next cycle; on the 3rd failure the player
+   gets an apology e-mail and the message is removed.
 
-   ```sql
-   CREATE TABLE site_tokens (
-     token_hash  BINARY(32) PRIMARY KEY,
-     account_id  INT UNSIGNED NOT NULL,
-     purpose     ENUM('verify','reset') NOT NULL,
-     expires_at  DATETIME NOT NULL,
-     used_at     DATETIME NULL
-   );
-   ```
+There is no e-mail verification step: a player can log in about 2 minutes after registering.
 
-   Keep site data (tokens, preferences, consent, download subscriptions) in its own schema —
-   never in AzerothCore tables beyond `account`.
-6. Send `verificationEmail()` from `scripts/email-templates.mjs` through
-   `POST https://abra-api.top/email/send-email/html` → `{ email, subject, htmlContent }`.
-   Link format: `{siteUrl}/verify-email?u=USERNAME&t=TOKEN`.
-
-> Why the server generates tokens: a token created in the browser is known to whoever
-> runs the browser, so it can't prove e-mail ownership.
-
-## `account.verify`  (key `…-events`)
-
-`{ "username": "ARTHAS", "token": "…" }` → hash the token, look up a row with
-`purpose='verify'`, `used_at IS NULL`, `expires_at > NOW()` and matching account.
-If valid: set `used_at = NOW()` (single use), `UPDATE account SET locked = 0`.
-Otherwise e-mail the user that the link expired (offer a new one).
-
-## `account.verify.resend`
-
-`{ "email": "…" }` → if an unverified account exists, invalidate old verify tokens and send a
-new one. Do nothing otherwise (no enumeration). Throttle per e-mail (e.g. 1 / 5 min).
+> **Not processed yet:** events in the `-events` key (below) are only counted in Pikachu's log.
 
 ## `password.reset.request`
 
-`{ "email": "…" }` → if the account exists, create a `reset` token (e.g. 60 min) and send
-`passwordResetEmail()`. Same silent behaviour if it doesn't.
+`{ "email": "…" }` → if the account exists, create a `reset` token (e.g. 60 min), stored only as a
+SHA-256 hash with its expiry, and send `passwordResetEmail()`. Same silent behaviour if it doesn't.
 
 ## `password.reset`
 
@@ -135,7 +108,7 @@ the queue directly. The worker must therefore:
 
 - re-validate every field and drop malformed messages;
 - cap registrations per e-mail domain / per time window and globally per minute;
-- limit verify/reset e-mails per address;
+- limit reset e-mails per address;
 - if the queue gets flooded, move registration behind your own endpoint with per-IP rate
   limiting and an adaptive CAPTCHA (e.g. Cloudflare Turnstile shown only when traffic is
   suspicious). Ideally Abra API itself gets per-IP rate limiting on `POST /notifications`.

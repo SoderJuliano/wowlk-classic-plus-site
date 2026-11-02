@@ -8,7 +8,6 @@ const routes = [
   { name: 'home', path: '/', component: HomeView, meta: { title: site.tagline } },
   auth('register', '/register', () => import('../views/RegisterView.vue'), 'Create Account'),
   auth('register-success', '/register/success', () => import('../views/RegisterSuccessView.vue'), 'Registration Received'),
-  auth('verify-email', '/verify-email', () => import('../views/VerifyEmailView.vue'), 'Verify E-mail'),
   auth('login', '/login', () => import('../views/LoginView.vue'), 'Login'),
   auth('forgot-password', '/forgot-password', () => import('../views/ForgotPasswordView.vue'), 'Recover Password'),
   auth('reset-password', '/reset-password', () => import('../views/ResetPasswordView.vue'), 'Reset Password'),

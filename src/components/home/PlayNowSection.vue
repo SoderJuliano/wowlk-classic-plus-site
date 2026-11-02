@@ -41,7 +41,7 @@ async function copy() {
             <span class="step__n">1</span>
             <div>
               <h3>Create your account</h3>
-              <p>Register and confirm your e-mail to activate it.</p>
+              <p>Register here. Your account is ready in about 2 minutes.</p>
               <RouterLink :to="{ name: 'register' }" class="btn btn--gold btn--sm">Create Account</RouterLink>
             </div>
           </li>

@@ -11,7 +11,7 @@ export const RULES = Object.freeze({
 })
 
 const USERNAME_RE = /^[A-Za-z0-9]+$/
-// Pragmatic e-mail check — final say is the verification link.
+// Pragmatic e-mail check — the server validates again.
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 // Printable ASCII only: the WoW client and SRP6 upper-casing are Latin-only.
 const PASSWORD_CHARSET_RE = /^[\x21-\x7E]+$/

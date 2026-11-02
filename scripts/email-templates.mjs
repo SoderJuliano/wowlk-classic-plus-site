@@ -26,17 +26,6 @@ function layout({ title, intro, cta, url, outro }) {
 </td></tr></table></body></html>`
 }
 
-export const verificationEmail = ({ siteUrl, username, token, hours = 24 }) => ({
-  subject: 'Verify your WoW Classic Plus LK account',
-  htmlContent: layout({
-    title: 'Confirm your e-mail',
-    intro: `Greetings, <b style="color:#eef3f8">${esc(username)}</b>. Confirm this address to activate your game account.`,
-    cta: 'Verify e-mail',
-    url: `${siteUrl}/verify-email?u=${encodeURIComponent(username)}&t=${encodeURIComponent(token)}`,
-    outro: `This link expires in ${hours} hours and can be used once. If you did not create this account, ignore this e-mail.`
-  })
-})
-
 export const passwordResetEmail = ({ siteUrl, username, token, minutes = 60 }) => ({
   subject: 'Reset your WoW Classic Plus LK password',
   htmlContent: layout({

@@ -143,7 +143,7 @@ export const site = Object.freeze({
   },
 
   auth: {
-    /** Site auth backend. Empty = login not available yet (UI says so honestly). */
+    /** Pikachu login API, e.g. https://host/launcher/v1. Empty = the login page says it is unavailable. */
     apiUrl: pick('VITE_AUTH_API_URL', ''),
     termsVersion: '2026-10-31'
   }
