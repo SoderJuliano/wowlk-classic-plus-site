@@ -67,7 +67,8 @@ Pikachu worker polls the key every 2 min ─▶ creates the AzerothCore account 
 - The plain password never leaves the browser on sign-up; the message carries the same SRP6
   `salt`/`verifier` AzerothCore stores (no BCrypt, no incompatible hash).
 - A player can log in about 2 minutes after registering; there is no e-mail verification step.
-- Password recovery pages publish events, but **nothing processes them yet** (see the contract).
+- Password recovery is on the site: username + account e-mail + new password. Only new SRP6 values
+  are queued, and the server checks the rest (see the contract).
 - Full message format and abuse rules: **[`docs/QUEUE_CONTRACT.md`](docs/QUEUE_CONTRACT.md)**.
 - Branded HTML e-mails for later use: `scripts/email-templates.mjs`.
 
@@ -90,7 +91,7 @@ body, with no cookies. The site only confirms the login for now: it does not kee
 ```
 src/config/site.js          central configuration
 src/services/               abraApi, accountService, srp6, queueCrypto, statusService
-src/utils/                  validation, botGuard (honeypot), linkParams
+src/utils/                  validation, botGuard (honeypot)
 src/components/home/        landing sections (hero, status, about, features, 64-bit, visuals, launcher, downloads, support, community)
 src/components/ui/          logo, icons, Northrend scene, badges, download dialog, honeypot
 src/components/auth/        auth layout + text field

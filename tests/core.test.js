@@ -2,7 +2,6 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import { computeVerifier, makeRegistrationData, toHex } from '../src/services/srp6.js'
 import { validateRegistration, validateUsername, validatePassword, passwordChecks } from '../src/utils/validation.js'
 import { createBotGuard, MIN_FILL_MS } from '../src/utils/botGuard.js'
-import { isValidLink } from '../src/utils/linkParams.js'
 
 describe('SRP6 (AzerothCore)', () => {
   // Vector cross-checked against an independent Python implementation of SRP6.cpp
@@ -53,12 +52,6 @@ describe('validation', () => {
     expect(validatePassword('Arthas123', 'arthas123')).toBeTruthy()
     expect(passwordChecks('Good1234', 'x').every((c) => c.ok)).toBe(true)
   })
-  it('validates server-issued link params', () => {
-    expect(isValidLink('ARTHAS', 'abcDEF0123456789_-')).toBe(true)
-    expect(isValidLink('AR', 'abcDEF0123456789')).toBe(false)
-    expect(isValidLink('ARTHAS', 'short')).toBe(false)
-    expect(isValidLink('ARTHAS', '<script>alert(1)</script>xxxxxxx')).toBe(false)
-  })
 })
 
 describe('bot guard', () => {
@@ -98,6 +91,22 @@ describe('account service payloads', () => {
     expect(payload.account.salt).toMatch(/^[0-9a-f]{64}$/)
     expect(payload.account.verifier).toMatch(/^[0-9a-f]{64}$/)
     expect(payload.consent.termsVersion).toBeTruthy()
+  })
+
+  it('queues password recovery on the events key without the plain password', async () => {
+    const fetchMock = vi.fn(async () => new Response('{}', { status: 201 }))
+    vi.stubGlobal('fetch', fetchMock)
+    const { recoverPassword } = await import('../src/services/accountService.js')
+    await recoverPassword({ username: 'arthas', email: ' Arthas@Lordaeron.com ', password: 'Frostmourne1' })
+
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body)
+    expect(body.key).toBe('test-events-key')
+    expect(body.title).toBe('password.recover')
+    expect(body.content).not.toMatch(/frostmourne1/i)
+    const { account } = JSON.parse(body.content)
+    expect(account).toMatchObject({ username: 'ARTHAS', email: 'arthas@lordaeron.com' })
+    expect(account.salt).toMatch(/^[0-9a-f]{64}$/)
+    expect(account.verifier).toMatch(/^[0-9a-f]{64}$/)
   })
 
   it('encrypts the payload when a queue public key is configured', async () => {

@@ -26,17 +26,6 @@ function layout({ title, intro, cta, url, outro }) {
 </td></tr></table></body></html>`
 }
 
-export const passwordResetEmail = ({ siteUrl, username, token, minutes = 60 }) => ({
-  subject: 'Reset your WoW Classic Plus LK password',
-  htmlContent: layout({
-    title: 'Password reset',
-    intro: `A password reset was requested for <b style="color:#eef3f8">${esc(username)}</b>.`,
-    cta: 'Choose a new password',
-    url: `${siteUrl}/reset-password?u=${encodeURIComponent(username)}&t=${encodeURIComponent(token)}`,
-    outro: `This link expires in ${minutes} minutes and works once. If you did not request it, ignore this e-mail — your password stays the same.`
-  })
-})
-
 export const downloadsReadyEmail = ({ siteUrl }) => ({
   subject: 'WoW Classic Plus LK — downloads are live',
   htmlContent: layout({

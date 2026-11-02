@@ -14,7 +14,7 @@ Browser ──POST /notifications──▶ Abra API ◀──GET /notifications/
 | Key (`.env`: `VITE_QUEUE_*_KEY`) | Content                                                       |
 |---------------------------------|---------------------------------------------------------------|
 | `VITE_QUEUE_REGISTRATION_KEY`   | `account.register` only — the account-creation array          |
-| `VITE_QUEUE_EVENTS_KEY`         | `password.reset.request`, `password.reset`, `downloads.subscribe` |
+| `VITE_QUEUE_EVENTS_KEY`         | `password.recover`, `downloads.subscribe` |
 
 ## Polling
 
@@ -83,18 +83,20 @@ Worker (Pikachu, module `wowlk`, polls every 2 minutes):
 
 There is no e-mail verification step: a player can log in about 2 minutes after registering.
 
-> **Not processed yet:** events in the `-events` key (below) are only counted in Pikachu's log.
+> **Not processed yet:** `downloads.subscribe` is only counted in Pikachu's log and stays queued.
 
-## `password.reset.request`
+## `password.recover`
 
-`{ "email": "…" }` → if the account exists, create a `reset` token (e.g. 60 min), stored only as a
-SHA-256 hash with its expiry, and send `passwordResetEmail()`. Same silent behaviour if it doesn't.
+```json
+{ "type": "password.recover", "account": { "username": "ARTHAS", "email": "…", "salt": "hex", "verifier": "hex", "locale": "pt-BR" } }
+```
 
-## `password.reset`
-
-`{ "username": "ARTHAS", "token": "…", "salt": "hex", "verifier": "hex" }` → validate the
-`reset` token as above, mark it used, invalidate other reset tokens for the account, then
-`UPDATE account SET salt = UNHEX(?), verifier = UNHEX(?) WHERE id = ?`.
+Proof of ownership is username + account e-mail. There is no e-mail link, so anyone who knows both
+can change the password. Pikachu (next 2-minute cycle) re-validates the fields, requires both to
+match, refuses GM/admin accounts and allows 5 attempts per username per hour. On success it updates
+`account.salt`/`account.verifier`, revokes the account's launcher sessions and sends a plain-text
+notice. Refusals are only logged: the site must not learn whether the data matched. Temporary errors
+are retried; on the 3rd failure the player gets an apology e-mail.
 
 ## `downloads.subscribe`
 
@@ -108,7 +110,6 @@ the queue directly. The worker must therefore:
 
 - re-validate every field and drop malformed messages;
 - cap registrations per e-mail domain / per time window and globally per minute;
-- limit reset e-mails per address;
 - if the queue gets flooded, move registration behind your own endpoint with per-IP rate
   limiting and an adaptive CAPTCHA (e.g. Cloudflare Turnstile shown only when traffic is
   suspicious). Ideally Abra API itself gets per-IP rate limiting on `POST /notifications`.
