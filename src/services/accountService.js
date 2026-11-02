@@ -9,7 +9,7 @@
  *  - On sign-up the plain password never leaves the browser; only AzerothCore SRP6 salt/verifier.
  *  - The account is created active by the server worker (Pikachu), within about 2 minutes.
  *  - Password recovery sends only new SRP6 values; the server checks username + e-mail.
- *  - Login goes straight to the Pikachu API over HTTPS (see login below).
+ *  - Login goes straight to the Pikachu API over HTTPS (see login below); services/session.js keeps the session.
  */
 import { site } from '../config/site.js'
 import { publish } from './abraApi.js'

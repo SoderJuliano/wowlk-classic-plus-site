@@ -175,3 +175,68 @@ describe('login (Pikachu API)', () => {
     await expect(login({ login: 'a', password: 'b' })).rejects.toMatchObject({ code: 'LOGIN_UNREACHABLE' })
   })
 })
+
+describe('web session', () => {
+  const load = async () => {
+    vi.resetModules()
+    vi.stubEnv('VITE_AUTH_API_URL', 'https://api.test/launcher/v1')
+    return import('../src/services/session.js')
+  }
+  const tokens = (rt = 'r_1') => ({ refresh_token: rt, refresh_expires_in: 2592000, access_token: 'a_x', user: { id: 1, username: 'ARTHAS' } })
+  const makeStale = () => {
+    const s = JSON.parse(localStorage.getItem('wowlk.session'))
+    localStorage.setItem('wowlk.session', JSON.stringify({ ...s, checkedAt: 0 }))
+  }
+  afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); localStorage.clear() })
+
+  it('survives a reload and never stores the access token', async () => {
+    (await load()).startSession(tokens())
+    expect(localStorage.getItem('wowlk.session')).not.toContain('a_x')
+    expect((await load()).session.value.username).toBe('ARTHAS')
+  })
+
+  it('ignores an expired session', async () => {
+    localStorage.setItem('wowlk.session', JSON.stringify({ username: 'ARTHAS', refreshToken: 'r', refreshExpiresAt: Date.now() - 1, checkedAt: 0 }))
+    expect((await load()).session.value).toBeNull()
+  })
+
+  it('does not call the API on page load when recently checked', async () => {
+    const s = await load()
+    s.startSession(tokens())
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    await s.revalidateSession()
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('stores the rotated token on revalidation', async () => {
+    (await load()).startSession(tokens())
+    makeStale()
+    const s = await load()
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify(tokens('r_2')), { status: 200 })))
+    await s.revalidateSession()
+    expect(s.session.value.refreshToken).toBe('r_2')
+  })
+
+  it('ends the session when the server revokes it, but keeps it on a network failure', async () => {
+    (await load()).startSession(tokens())
+    makeStale()
+    let s = await load()
+    vi.stubGlobal('fetch', vi.fn(async () => { throw new TypeError('offline') }))
+    await s.revalidateSession()
+    expect(s.session.value).not.toBeNull()
+    s = await load()
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('{}', { status: 401 })))
+    await s.revalidateSession()
+    expect(s.session.value).toBeNull()
+    expect(localStorage.getItem('wowlk.session')).toBeNull()
+  })
+
+  it('logs out locally even if the server is unreachable', async () => {
+    const s = await load()
+    s.startSession(tokens())
+    vi.stubGlobal('fetch', vi.fn(async () => { throw new TypeError('offline') }))
+    await s.endSession()
+    expect(s.session.value).toBeNull()
+  })
+})

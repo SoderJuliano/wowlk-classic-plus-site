@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import SiteLogo from '../ui/SiteLogo.vue'
 import AppIcon from '../ui/AppIcon.vue'
 import { NAV_LINKS } from './navLinks.js'
+import { session, endSession } from '../../services/session.js'
 
 const scrolled = ref(false)
 const open = ref(false)
@@ -28,8 +29,14 @@ watch(open, (v) => document.body.style.setProperty('overflow', v ? 'hidden' : ''
           </li>
         </ul>
         <div class="hdr__actions">
-          <RouterLink :to="{ name: 'login' }" class="hdr__link hdr__login"><AppIcon name="lock" :size="16" /> Login</RouterLink>
-          <RouterLink :to="{ name: 'register' }" class="btn btn--gold btn--sm">Create Account</RouterLink>
+          <template v-if="session">
+            <span class="hdr__link hdr__user"><AppIcon name="user" :size="16" /> {{ session.username }}</span>
+            <button type="button" class="btn btn--ghost btn--sm" @click="endSession">Log Out</button>
+          </template>
+          <template v-else>
+            <RouterLink :to="{ name: 'login' }" class="hdr__link hdr__login"><AppIcon name="lock" :size="16" /> Login</RouterLink>
+            <RouterLink :to="{ name: 'register' }" class="btn btn--gold btn--sm">Create Account</RouterLink>
+          </template>
         </div>
       </nav>
 
@@ -68,11 +75,15 @@ watch(open, (v) => document.body.style.setProperty('overflow', v ? 'hidden' : ''
   transform: scaleX(0); transition: transform .3s var(--ease);
 }
 .hdr__link:hover { color: var(--gold-100); }
+.hdr__user { color: var(--gold-100); cursor: default; }
+.hdr__user::after { display: none; }
 .hdr__link:hover::after { transform: scaleX(1); }
 .hdr__actions { display: flex; align-items: center; gap: 10px; }
 .hdr__toggle { display: none; background: none; border: 1px solid var(--line-strong); color: var(--text-100); border-radius: 6px; padding: 6px; cursor: pointer; }
 
 @media (max-width: 1080px) {
+  /* backdrop-filter would make the header the containing block of the fixed menu panel and cut it off. */
+  .hdr--solid { backdrop-filter: none; background: rgba(5, 10, 16, .97); }
   .hdr__toggle { display: inline-flex; }
   .hdr__nav {
     position: fixed; inset: var(--header-h) 0 0; flex-direction: column; align-items: stretch; gap: 24px;
@@ -86,6 +97,7 @@ watch(open, (v) => document.body.style.setProperty('overflow', v ? 'hidden' : ''
   .hdr__link::after { display: none; }
   .hdr__actions { flex-direction: column; align-items: stretch; }
   .hdr__actions .btn { --h: 52px; }
+  .hdr__user { justify-content: center; border-bottom: 0; }
   .hdr__login { justify-content: center; border: 1px solid var(--line-strong); border-radius: 4px; }
 }
 </style>

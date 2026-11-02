@@ -84,13 +84,14 @@ Pikachu worker polls the key every 2 min ─▶ creates the AzerothCore account 
 The login page calls the Pikachu API directly. Set `VITE_AUTH_API_URL` to
 `https://<pikachu-host>/launcher/v1`; without it the page says web login is unavailable.
 `POST /auth/login` takes `{ login, password }` (username or e-mail) and returns tokens in the
-body, with no cookies. The site only confirms the login for now: it does not keep the session.
+body, with no cookies. `services/session.js` keeps the username and refresh token in localStorage for
+the header, and rechecks them on page load (at most every 5 minutes).
 
 ## Structure
 
 ```
 src/config/site.js          central configuration
-src/services/               abraApi, accountService, srp6, queueCrypto, statusService
+src/services/               abraApi, accountService, session, srp6, queueCrypto, statusService
 src/utils/                  validation, botGuard (honeypot)
 src/components/home/        landing sections (hero, status, about, features, 64-bit, visuals, launcher, downloads, support, community)
 src/components/ui/          logo, icons, Northrend scene, badges, download dialog, honeypot

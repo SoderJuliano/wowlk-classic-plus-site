@@ -5,12 +5,12 @@ import TextField from '../components/auth/TextField.vue'
 import HoneypotField from '../components/ui/HoneypotField.vue'
 import { login, isLoginAvailable } from '../services/accountService.js'
 import { createBotGuard } from '../utils/botGuard.js'
+import { session, startSession } from '../services/session.js'
 
 const form = reactive({ login: '', password: '' })
 const website = ref('')
 const busy = ref(false)
 const error = ref('')
-const account = ref('')
 const available = isLoginAvailable()
 const guard = createBotGuard()
 
@@ -20,8 +20,7 @@ async function submit() {
   if (!form.login.trim() || !form.password) { error.value = 'Enter your username or e-mail and your password.'; return }
   busy.value = true
   try {
-    const session = await login(form)
-    account.value = session.user.username
+    startSession(await login(form))
   } catch (e) {
     // The service only says "invalid" for wrong credentials, never whether an account exists.
     error.value = e.message
@@ -34,11 +33,11 @@ async function submit() {
 
 <template>
   <AuthLayout title="Welcome Back" subtitle="Log in to your account.">
-    <p v-if="!available" class="alert alert--info">
+    <p v-if="!available && !session" class="alert alert--info">
       Web login is not available right now. Your account still works in the launcher and in the game.
     </p>
-    <template v-if="account">
-      <p class="alert alert--success" role="status">Logged in as <strong>{{ account }}</strong>. Your account is active: sign in with the launcher and start your adventure.</p>
+    <template v-if="session">
+      <p class="alert alert--success" role="status">Logged in as <strong>{{ session.username }}</strong>. Your account is active: sign in with the launcher and start your adventure.</p>
       <RouterLink to="/" class="btn btn--gold btn--block">Back to Home</RouterLink>
     </template>
 

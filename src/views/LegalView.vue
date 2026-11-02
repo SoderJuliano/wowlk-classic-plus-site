@@ -29,7 +29,7 @@ const isTerms = computed(() => route.name === 'terms')
         <h1 class="gold-text">Privacy Policy</h1>
         <p class="legal__ver">Version {{ site.auth.termsVersion }} · Draft — to be reviewed before launch.</p>
         <h2>What we collect</h2>
-        <p>Your username, e-mail address, an SRP6 password verifier (your password itself is never transmitted or stored), the time you accepted the terms and your notification preference.</p>
+        <p>Your username, e-mail address, an SRP6 password verifier (your password is never stored; it is only sent over HTTPS to check your login), the time you accepted the terms and your notification preference. When you log in on the site, your browser keeps your username and a session token until you log out or it expires.</p>
         <h2>Why</h2>
         <p>To create and secure your game account, send you account notices, recover access and — if you opt in — notify you when downloads become available.</p>
         <h2>What we never do</h2>
