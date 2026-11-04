@@ -143,5 +143,11 @@ function onBackdrop(e) { if (e.target === dialog.value) close() }
 .dlg__form .input { flex: 1; }
 .dlg__form .btn { --h: 48px; }
 .field-error { margin-top: 8px; }
-@media (max-width: 460px) { .dlg__form { flex-direction: column; } }
+@media (max-width: 460px) {
+  .dlg { max-width: calc(100% - 20px); }
+  .dlg__box { padding: 32px 14px 20px; }
+  .dlg__icon { width: 54px; height: 54px; margin-bottom: 10px; }
+  .dlg__tips { padding: 10px 12px 10px 22px; font-size: .78rem; }
+  .dlg__form { flex-direction: column; }
+}
 </style>

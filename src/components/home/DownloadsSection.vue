@@ -58,4 +58,10 @@ const PLATFORM = { windows: 'Windows', linux: 'Linux' }
 .dl__sub { color: var(--text-300); margin: 0; }
 .dl__plats { list-style: none; padding: 0; margin: 10px 0 18px; display: flex; gap: 18px; }
 .dl__plats li { display: inline-flex; align-items: center; gap: 8px; color: var(--text-100); font-size: .9rem; }
+@media (max-width: 480px) {
+  .dl { padding: 22px 16px; gap: 8px; }
+  .dl__bits { font-size: 2.6rem; }
+  .dl__title { font-size: 1.15rem; }
+  .dl__plats { margin: 8px 0 16px; gap: 12px; }
+}
 </style>

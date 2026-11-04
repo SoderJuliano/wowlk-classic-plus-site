@@ -1,17 +1,17 @@
 /* ───────── Sections ───────── */
-.section { position: relative; padding: clamp(72px, 10vw, 128px) 0; }
-.section--tight { padding: clamp(48px, 7vw, 88px) 0; }
-.section-head { text-align: center; max-width: 780px; margin: 0 auto clamp(40px, 6vw, 64px); }
+.section { position: relative; padding: clamp(56px, 8vw, 128px) 0; }
+.section--tight { padding: clamp(40px, 6vw, 88px) 0; }
+.section-head { text-align: center; max-width: 780px; margin: 0 auto clamp(32px, 5vw, 64px); }
 .section-head p { color: var(--text-300); font-size: 1.075rem; }
 .eyebrow {
-  display: inline-flex; align-items: center; gap: 10px;
-  font: 600 .74rem/1 var(--font-body); letter-spacing: .28em; text-transform: uppercase;
-  color: var(--ice-300); margin-bottom: 18px;
+  display: inline-flex; align-items: center; gap: 8px;
+  font: 600 clamp(.66rem, 2vw, .74rem)/1 var(--font-body); letter-spacing: clamp(.16em, .8vw, .28em); text-transform: uppercase;
+  color: var(--ice-300); margin-bottom: 16px;
 }
-.eyebrow::before, .eyebrow::after { content: ''; width: 28px; height: 1px; background: linear-gradient(90deg, transparent, var(--ice-400)); }
+.eyebrow::before, .eyebrow::after { content: ''; width: clamp(16px, 3vw, 28px); height: 1px; background: linear-gradient(90deg, transparent, var(--ice-400)); }
 .eyebrow::after { transform: scaleX(-1); }
-.title-xl { font-size: clamp(2rem, 4.6vw, 3.3rem); }
-.title-lg { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
+.title-xl { font-size: clamp(1.75rem, 6.5vw, 3.3rem); }
+.title-lg { font-size: clamp(1.45rem, 5vw, 2.5rem); }
 .gold-text {
   background: linear-gradient(180deg, var(--gold-100) 0%, var(--gold-300) 45%, var(--gold-500) 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
@@ -29,7 +29,7 @@
 
 /* ───────── Panel: WoW-inspired frame ───────── */
 .panel {
-  --pad: clamp(20px, 3vw, 32px);
+  --pad: clamp(16px, 3.5vw, 32px);
   position: relative; padding: var(--pad);
   background: linear-gradient(180deg, rgba(18, 33, 51, .78), rgba(8, 14, 22, .92)), var(--bg-850);
   border: 1px solid rgba(212, 168, 69, .28);
@@ -67,6 +67,10 @@
 .btn--sm { --h: 40px; padding: 0 18px; font-size: .76rem; }
 .btn--lg { --h: 58px; padding: 0 34px; font-size: .92rem; }
 .btn--block { width: 100%; }
+@media (max-width: 480px) {
+  .btn { padding: 0 18px; font-size: .82rem; }
+  .btn--lg { --h: 52px; padding: 0 20px; font-size: .86rem; }
+}
 
 .btn--gold {
   color: #2a1a04;

@@ -112,8 +112,8 @@ export const site = Object.freeze({
   launcher: {
     status: pick('VITE_LAUNCHER_STATUS', RELEASE.AVAILABLE),
     version: '0.1.0',
-    windowsUrl: pick('VITE_LAUNCHER_WINDOWS_URL', 'https://drive.google.com/file/d/1qbHdMEk84aFGBqBRuton7mHzPtIm2uoJ/view?usp=sharing'),
-    linuxUrl: pick('VITE_LAUNCHER_LINUX_URL', 'https://drive.google.com/file/d/1O-xpCmca_a3BG3z4v4_CxmbxTSV7llkp/view?usp=sharing')
+    windowsUrl: pick('VITE_LAUNCHER_WINDOWS_URL', 'https://drive.google.com/file/d/1n4pcuC0mXFkZaRgojs0Lr9ewNwsWHFuT/view?usp=sharing'),
+    linuxUrl: pick('VITE_LAUNCHER_LINUX_URL', 'https://drive.google.com/file/d/13d0DtDgedEePkAvwVpqsPgZHLZAG-61O/view?usp=sharing')
   },
 
   /** Upscaling technologies for the 64-bit client. Update the stage as work progresses. */

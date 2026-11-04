@@ -91,5 +91,17 @@ const { requestDownload } = useDownloadModal()
 .hero__scroll { position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%); width: 26px; height: 42px; border: 1.5px solid rgba(214, 239, 255, .45); border-radius: 14px; }
 .hero__scroll span { position: absolute; left: 50%; top: 8px; width: 3px; height: 8px; margin-left: -1.5px; border-radius: 2px; background: var(--ice-200); animation: wheel 2s var(--ease) infinite; }
 @keyframes wheel { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }
-@media (max-width: 640px) { .hero__cta { width: 100%; flex-direction: column; } .hero__cta .btn { width: 100%; } .hero__scroll { display: none; } }
+@media (max-width: 640px) {
+  .hero { min-height: auto; padding: calc(var(--header-h) + 20px) 0 88px; }
+  .hero__kicker { gap: 8px; font-size: .68rem; letter-spacing: .16em; margin-bottom: 18px; }
+  .hero__wow { font-size: .95rem; letter-spacing: .4em; padding-left: .4em; margin-bottom: 8px; }
+  .hero__main { font-size: clamp(2.2rem, 11vw, 3.4rem); }
+  .hero__sub { margin: 16px 0 10px; font-size: clamp(1.05rem, 4.5vw, 1.35rem); }
+  .hero__text { font-size: .92rem; line-height: 1.55; }
+  .hero__cta { width: 100%; flex-direction: column; gap: 12px; }
+  .hero__cta .btn { width: 100%; --h: 52px; font-size: .86rem; padding: 0 20px; }
+  .hero__pills { margin: 20px 0 0; gap: 6px; }
+  .hero__pills li { font-size: .74rem; padding: 5px 10px; }
+  .hero__scroll { display: none; }
+}
 </style>

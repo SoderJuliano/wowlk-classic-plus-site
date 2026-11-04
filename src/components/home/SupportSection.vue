@@ -76,4 +76,9 @@ const pass = [
 .sup__never li svg { color: var(--danger); }
 .sup__pass li svg { color: var(--ice-300); }
 @media (max-width: 960px) { .sup__grid { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+  .sup__card { padding: 20px 16px; }
+  .sup__card .btn, .sup__card .has-tooltip { width: 100%; }
+  .sup__card .btn { width: 100%; justify-content: center; }
+}
 </style>

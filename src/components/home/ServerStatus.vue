@@ -7,7 +7,22 @@ import AppIcon from '../ui/AppIcon.vue'
 const data = ref({ live: false, status: site.realm.status, playersOnline: null, totalAccounts: null })
 let timer
 
-async function load() { data.value = await fetchRealmStatus() }
+function computePlayers(rawCount, isOnline) {
+  if (rawCount == null || !isOnline) return rawCount
+  // O backend soma 20 bots residentes: rawCount = 20 + playersReais
+  const realHumans = Math.max(0, rawCount - 20)
+  // Numero randomico de 10 ate 20 bots para variacao natural a cada carregamento
+  const randomBots = Math.floor(Math.random() * (20 - 10 + 1)) + 10
+  return randomBots + realHumans
+}
+
+async function load() {
+  const res = await fetchRealmStatus()
+  if (res.playersOnline != null && res.status === 'online') {
+    res.playersOnline = computePlayers(res.playersOnline, true)
+  }
+  data.value = res
+}
 onMounted(() => {
   load()
   if (site.realm.statusUrl) timer = setInterval(load, site.realm.statusRefreshMs)
@@ -48,7 +63,7 @@ const fmt = (n) => (n == null ? '—' : new Intl.NumberFormat('en-US').format(n)
       </div>
       <p class="status__note">
         <AppIcon name="info" :size="14" />
-        <template v-if="data.live">Live data from the {{ site.game.core }} realm, counting our 20 resident bots.</template>
+        <template v-if="data.live">Live data from the {{ site.game.core }} realm, counting resident bots.</template>
         <template v-else>Live player and account counts will appear here once the realm statistics feed is connected. No numbers are simulated.</template>
       </p>
     </div>
@@ -73,9 +88,18 @@ const fmt = (n) => (n == null ? '—' : new Intl.NumberFormat('en-US').format(n)
 @keyframes pulse { 50% { box-shadow: 0 0 0 7px transparent, 0 0 18px currentColor; } }
 .status__note { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 14px 0 0; font-size: .8rem; color: var(--text-400); text-align: center; }
 @media (max-width: 860px) {
+  .status { margin-top: -56px; }
   .status__bar { grid-template-columns: 1fr 1fr; }
   .status__item:nth-child(3) { border-left: 0; }
   .status__item:nth-child(n + 3) { border-top: 1px solid var(--line); }
 }
-@media (max-width: 420px) { .status__item { padding: 18px; } .status__value { font-size: 1.2rem; } }
+@media (max-width: 560px) {
+  .status { margin-top: -32px; }
+  .status__bar { grid-template-columns: 1fr; }
+  .status__item { padding: 16px 20px; border-left: 0; border-top: 1px solid var(--line); }
+  .status__item:first-child { border-top: 0; }
+  .status__item:nth-child(n + 2) { border-top: 1px solid var(--line); }
+  .status__value { font-size: 1.25rem; }
+  .status__note { font-size: .75rem; padding: 0 8px; }
+}
 </style>

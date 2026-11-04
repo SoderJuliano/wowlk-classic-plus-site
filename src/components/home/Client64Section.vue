@@ -213,4 +213,13 @@ const benefits = [
   .why__arrow { transform: rotate(90deg); justify-self: center; }
   .choice__or { justify-self: center; }
 }
+@media (max-width: 560px) {
+  .plat { padding: 24px 16px; }
+  .plat--hero .plat__icon { width: 84px; height: 84px; }
+  .plat--hero h3 { font-size: 1.45rem; }
+  .why { gap: 16px; }
+  .ups__list { grid-template-columns: 1fr; }
+  .choice__card { padding: 20px 16px; }
+  .choice__bits { font-size: 2.6rem; }
+}
 </style>

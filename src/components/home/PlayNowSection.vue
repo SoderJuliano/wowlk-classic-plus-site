@@ -1,19 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue'
 import { site } from '../../config/site.js'
 import AppIcon from '../ui/AppIcon.vue'
 import StageBadge from '../ui/StageBadge.vue'
-
-const copied = ref(false)
-const line = computed(() => `set realmlist ${site.realm.realmlist}`)
-
-async function copy() {
-  try {
-    await navigator.clipboard.writeText(line.value)
-    copied.value = true
-    setTimeout(() => (copied.value = false), 2200)
-  } catch { /* clipboard blocked — text stays selectable */ }
-}
 </script>
 
 <template>
@@ -53,20 +41,6 @@ async function copy() {
               <a href="#downloads" class="btn btn--ghost btn--sm">Downloads</a>
             </div>
           </li>
-          <li class="step">
-            <span class="step__n">3</span>
-            <div>
-              <h3>Set the realmlist</h3>
-              <p>Open <code>Data/&lt;locale&gt;/realmlist.wtf</code> and replace its content with:</p>
-              <div v-if="site.realm.realmlist" class="rl">
-                <code class="rl__code">{{ line }}</code>
-                <button type="button" class="rl__copy" :aria-label="copied ? 'Copied' : 'Copy realmlist'" @click="copy">
-                  <AppIcon :name="copied ? 'check' : 'fileCheck'" :size="18" /> {{ copied ? 'Copied' : 'Copy' }}
-                </button>
-              </div>
-              <p v-else class="rl rl--soon">Realmlist address will be published here shortly.</p>
-            </div>
-          </li>
         </ol>
       </div>
     </div>
@@ -86,10 +60,15 @@ async function copy() {
 .step p { color: var(--text-300); font-size: .9rem; margin: 0 0 12px; }
 .step code { color: var(--gold-200); font-size: .85em; }
 .step__n { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; font: 700 1.1rem var(--font-display); color: var(--gold-100); border: 1px solid var(--gold-500); background: radial-gradient(circle, #1b3550, #070e16); }
-.rl { display: flex; align-items: stretch; border-radius: 4px; overflow: hidden; border: 1px solid var(--ice-700); background: #02060b; }
-.rl__code { flex: 1; padding: 12px 14px; font: 600 .95rem/1.3 ui-monospace, 'Cascadia Code', Consolas, monospace; color: var(--ice-100) !important; overflow-x: auto; white-space: nowrap; user-select: all; }
-.rl__copy { display: inline-flex; align-items: center; gap: 6px; padding: 0 16px; border: 0; border-left: 1px solid var(--ice-700); background: rgba(79, 179, 247, .15); color: var(--ice-100); font-weight: 600; font-size: .82rem; cursor: pointer; }
-.rl__copy:hover { background: rgba(79, 179, 247, .28); }
-.rl--soon { padding: 12px 14px; color: var(--text-400) !important; font-style: italic; margin: 0 !important; }
 @media (max-width: 900px) { .play__box { grid-template-columns: 1fr; } }
+@media (max-width: 560px) {
+  .play__box { padding: 20px 14px; gap: 24px; }
+  .play__facts { gap: 8px; margin-top: 16px; }
+  .play__facts li { font-size: .78rem; padding: 5px 10px; }
+  .step { grid-template-columns: 34px 1fr; gap: 10px; padding: 14px 12px; }
+  .step__n { width: 34px; height: 34px; font-size: .9rem; }
+  .step h3 { font-size: .98rem; }
+  .step p { font-size: .85rem; }
+  .step .btn { width: 100%; }
+}
 </style>

@@ -73,5 +73,11 @@ const ledger = [
 .ledger li.is-in-development::before { color: var(--ice-300); }
 .ledger li.is-planned::before { color: var(--gold-300); }
 @media (max-width: 960px) { .about__grid { grid-template-columns: 1fr; } }
-@media (max-width: 480px) { .ledger ul { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+  .about__quote { font-size: .95rem; padding: 12px 16px; margin-top: 18px; }
+  .ledger { padding: 16px; }
+  .ledger__head { flex-wrap: wrap; gap: 8px; }
+  .ledger__head h3 { font-size: .95rem; }
+  .ledger ul { grid-template-columns: 1fr; }
+}
 </style>

@@ -64,5 +64,9 @@ ul a:hover { color: var(--ice-100); }
 .ftr__bottom p { margin: 0; }
 .ftr__disclaimer { max-width: 900px; }
 @media (max-width: 900px) { .ftr__grid { grid-template-columns: 1fr 1fr; } .ftr__brand { grid-column: 1 / -1; } }
-@media (max-width: 520px) { .ftr__grid { grid-template-columns: 1fr; } }
+@media (max-width: 520px) {
+  .ftr { padding: 48px 0 24px; margin-top: 24px; }
+  .ftr__grid { grid-template-columns: 1fr; gap: 28px; }
+  .ftr__bottom { margin-top: 36px; padding-top: 18px; }
+}
 </style>

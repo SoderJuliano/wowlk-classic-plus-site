@@ -97,5 +97,14 @@ const perks = [
 .mock__play { padding: 10px 28px; border-radius: 4px; font: 700 .8rem/1 var(--font-display); letter-spacing: .16em; text-transform: uppercase; color: #2a1a04; background: linear-gradient(180deg, var(--gold-100), var(--gold-400)); opacity: .55; }
 .mock__badge { position: absolute; top: 46px; right: 16px; background: rgba(3, 6, 10, .85); }
 @media (max-width: 960px) { .lnc__grid { grid-template-columns: 1fr; } .mock { transform: none; } }
-@media (max-width: 480px) { .lnc__perks { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+  .lnc__perks { grid-template-columns: 1fr; gap: 10px; margin: 18px 0 24px; }
+  .lnc__dl { flex-direction: column; width: 100%; }
+  .lnc__dl .btn { width: 100%; }
+  .mock__body { grid-template-columns: 52px 1fr; }
+  .mock__main { padding: 12px; gap: 10px; }
+  .mock__banner { height: 96px; padding: 12px; }
+  .mock__banner b { font-size: 1.15rem; }
+  .mock__badge { top: 10px; right: 10px; }
+}
 </style>

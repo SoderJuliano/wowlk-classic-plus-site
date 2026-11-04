@@ -33,4 +33,11 @@ defineProps({
 .auth__title { text-align: center; font-size: clamp(1.6rem, 4vw, 2.1rem); margin-top: 8px; }
 .auth__sub { text-align: center; color: var(--text-300); margin-bottom: 28px; }
 .auth__footer { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); text-align: center; font-size: .9rem; color: var(--text-300); }
+@media (max-width: 480px) {
+  .auth { padding: calc(var(--header-h) + 28px) 12px 40px; }
+  .auth__box { padding: 44px 16px 24px; }
+  .auth__emblem { top: -32px; }
+  .auth__title { font-size: 1.45rem; }
+  .auth__sub { margin-bottom: 18px; font-size: .88rem; }
+}
 </style>
