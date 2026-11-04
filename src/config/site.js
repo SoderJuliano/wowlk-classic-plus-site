@@ -82,6 +82,11 @@ export const site = Object.freeze({
       title: 'New classes for each race',
       caption: '32-bit client — the new race and class combinations, in game.'
     },
+    petMounts: {
+      id: 'eP7LzMSIzUw',
+      title: 'Companion pets as mounts & Hunter immersion',
+      caption: '32-bit client (ready) — Hunters can ride their tamed companion pets, including the boar ground mount and owl flying mount with synchronized wingbeat animations.'
+    },
     nativeLinux: {
       id: 'S2MQICTyLmI',
       title: 'Native Linux 64-bit client — early build',

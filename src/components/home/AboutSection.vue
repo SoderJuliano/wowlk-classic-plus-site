@@ -7,7 +7,7 @@ const ledger = [
   {
     stage: STAGE.LIVE,
     title: 'Available on the realm',
-    items: ['Live global realm', 'Traditional 32-bit client', 'Redesigned starting abilities', 'Improved vendors & items', 'Enhanced early drops', 'Redesigned professions + armor recycling', 'Original XP progression', 'Tested PvP & dungeons']
+    items: ['Live global realm', 'Traditional 32-bit client', 'Redesigned starting abilities', 'Improved vendors & items', 'Enhanced early drops', 'Redesigned professions + armor recycling', 'Companion pets as mounts (Hunter)', 'Original XP progression', 'Tested PvP & dungeons']
   },
   {
     stage: STAGE.IN_DEVELOPMENT,

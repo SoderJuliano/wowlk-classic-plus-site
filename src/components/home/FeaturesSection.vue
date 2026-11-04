@@ -27,6 +27,10 @@ const features = [
     text: 'Play combinations the original game never offered: Tauren Paladin, Troll Druid, Gnome Priest, Undead Paladin, Blood Elf Warrior, Human Hunter and Dwarf Shaman or Warlock — see it in the video below.'
   },
   {
+    icon: 'paw', title: 'Companion Pets as Mounts',
+    text: 'Hunters can now mount their bonded companion pets. Tamed beasts like boars, owls, wolves, bears, and cats scale dynamically to rideable size, bringing deep class fantasy and immersion into the open world — see it in the video below.'
+  },
+  {
     icon: 'hourglass', title: 'Original XP Progression',
     text: 'Experience rates keep the original pace and soul of Wrath leveling. This is not — and will not become — an instant-level or high-rate server.'
   },
@@ -85,6 +89,23 @@ const features = [
             <li><AppIcon name="users" :size="18" /> Tauren Paladin, Troll Druid and Gnome Priest</li>
             <li><AppIcon name="sword" :size="18" /> Full class abilities and attributes</li>
             <li><AppIcon name="check" :size="18" /> Traditional 32-bit client — ready</li>
+          </ul>
+        </div>
+      </div>
+
+      <div v-reveal class="showcase">
+        <VideoEmbed v-bind="site.videos.petMounts" />
+        <div class="showcase__copy">
+          <p class="eyebrow">Class immersion & rework</p>
+          <h3 class="title-lg gold-text">Hunters Ride Their Animal Companions</h3>
+          <p>
+            Recorded on the ready-to-play 32-bit client: class immersion rework allowing Hunters to summon and ride
+            their tamed beasts. Watch the armored boar charging across the terrain and the owl soaring with calibrated wingbeat spine synchronicity.
+          </p>
+          <ul>
+            <li><AppIcon name="paw" :size="18" /> Mount any tamed companion pet (boars, owls, wolves & more)</li>
+            <li><AppIcon name="sparkles" :size="18" /> Dynamic pet size scaling and full wingbeat flight synchronicity</li>
+            <li><AppIcon name="check" :size="18" /> Traditional 32-bit client — ready and live on server</li>
           </ul>
         </div>
       </div>
