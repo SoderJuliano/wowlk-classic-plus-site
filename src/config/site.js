@@ -72,6 +72,16 @@ export const site = Object.freeze({
 
   /** Official gameplay videos (YouTube IDs). Loaded only when the visitor clicks play. */
   videos: {
+    druidAbilities: {
+      id: 'awz4VzT1_ik',
+      title: 'Reworked starting abilities — Druid',
+      caption: '32-bit client (ready) — Redesigned early abilities and dynamic starter kit for Druids.'
+    },
+    rogueShadowClone: {
+      id: 'MePhLwvG7MY',
+      title: 'New Rogue ability — Shadow Clone',
+      caption: '32-bit client (ready) — Rogue summons deceptive shadow duplicates in combat.'
+    },
     blacksmithing: {
       id: 'k6f-qLByiLw',
       title: 'Blacksmithing mechanics & reworked vendor items',

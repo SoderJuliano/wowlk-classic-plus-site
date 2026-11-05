@@ -8,7 +8,7 @@ import { STAGE, site } from '../../config/site.js'
 const features = [
   {
     icon: 'sword', title: 'Redesigned Starting Abilities',
-    text: 'Every class starts with reworked abilities. Combat feels more interesting and more powerful from the very first levels — the early leveling experience has been significantly improved.'
+    text: 'Every class starts with reworked abilities and unique spells like Rogue Shadow Clone and dynamic Druid rotations. Combat feels more responsive from level 1 — see them in the videos below.'
   },
   {
     icon: 'bag', title: 'Improved Vendors & Items',
@@ -57,6 +57,40 @@ const features = [
           <h3 class="feat__title">{{ f.title }}</h3>
           <p class="feat__text">{{ f.text }}</p>
         </article>
+      </div>
+
+      <div v-reveal class="showcase">
+        <VideoEmbed v-bind="site.videos.druidAbilities" />
+        <div class="showcase__copy">
+          <p class="eyebrow">Class rework & starter kit</p>
+          <h3 class="title-lg gold-text">Reworked Druid Starting Kit</h3>
+          <p>
+            Recorded on the ready-to-play 32-bit client: reworked starting spells and combat rotation for Druids.
+            Enjoy a fluid, engaging combat flow right from level 1.
+          </p>
+          <ul>
+            <li><AppIcon name="sparkles" :size="18" /> Dynamic early spell kit and fluid rotation</li>
+            <li><AppIcon name="bolt" :size="18" /> Immediate combat impact from level 1</li>
+            <li><AppIcon name="check" :size="18" /> Traditional 32-bit client — ready and live</li>
+          </ul>
+        </div>
+      </div>
+
+      <div v-reveal class="showcase">
+        <VideoEmbed v-bind="site.videos.rogueShadowClone" />
+        <div class="showcase__copy">
+          <p class="eyebrow">New class abilities</p>
+          <h3 class="title-lg gold-text">Rogue — Shadow Clone</h3>
+          <p>
+            Recorded on the ready-to-play 32-bit client: the new Rogue Shadow Clone ability in battle.
+            Summon deceptive shadow clones to fight by your side and overwhelm targets in combat.
+          </p>
+          <ul>
+            <li><AppIcon name="sword" :size="18" /> Deceptive shadow duplicates fighting in combat</li>
+            <li><AppIcon name="rune" :size="18" /> New tactical depth for stealth and burst windows</li>
+            <li><AppIcon name="check" :size="18" /> Traditional 32-bit client — ready and live</li>
+          </ul>
+        </div>
       </div>
 
       <div v-reveal class="showcase">
