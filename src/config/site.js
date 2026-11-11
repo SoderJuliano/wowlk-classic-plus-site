@@ -126,9 +126,9 @@ export const site = Object.freeze({
   /** The launcher installs the game (36 GB) and keeps it updated. */
   launcher: {
     status: pick('VITE_LAUNCHER_STATUS', RELEASE.AVAILABLE),
-    version: '0.1.31',
-    windowsUrl: pick('VITE_LAUNCHER_WINDOWS_URL', 'https://pub-aca87790200a4237af40519010e23d8c.r2.dev/OLK-Plus-Launcher-Setup-0.1.31.exe'),
-    linuxUrl: pick('VITE_LAUNCHER_LINUX_URL', 'https://pub-aca87790200a4237af40519010e23d8c.r2.dev/OLK-Plus-Launcher-0.1.31.AppImage')
+    version: '0.1.32',
+    windowsUrl: pick('VITE_LAUNCHER_WINDOWS_URL', 'https://pub-aca87790200a4237af40519010e23d8c.r2.dev/OLK-Plus-Launcher-Setup-0.1.32.exe'),
+    linuxUrl: pick('VITE_LAUNCHER_LINUX_URL', 'https://pub-aca87790200a4237af40519010e23d8c.r2.dev/OLK-Plus-Launcher-0.1.32.AppImage')
   },
 
   /** Upscaling technologies for the 64-bit client. Update the stage as work progresses. */
