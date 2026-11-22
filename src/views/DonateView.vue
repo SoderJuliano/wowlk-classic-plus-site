@@ -130,7 +130,7 @@ function poll() {
     try {
       const p = await getPayment(payment.value.id)
       payment.value = { ...payment.value, ...p, pix: p.pix ?? payment.value.pix }
-      if (p.recorded) {
+      if (p.recorded || p.status === 'approved') {
         phase.value = 'done'
         refreshSupporter({ force: true })
         return
