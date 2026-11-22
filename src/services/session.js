@@ -50,6 +50,31 @@ export function startSession(tokens) {
   write(fromTokens(tokens))
 }
 
+/**
+ * Consumes `#sso=<refresh_token>` passed by the desktop launcher when opening the site.
+ * Removes the hash from the URL immediately and exchanges the token for a web session.
+ */
+export async function consumeSsoHash() {
+  if (typeof window === 'undefined') return false
+  const hash = window.location.hash || ''
+  const match = hash.match(/^#sso=([A-Za-z0-9._~-]+)$/)
+  if (!match) return false
+  const token = decodeURIComponent(match[1])
+  try {
+    window.history.replaceState(null, '', window.location.pathname + window.location.search)
+  } catch { /* ignore */ }
+  return withLock(async () => {
+    try {
+      const res = await post('/auth/refresh', { refresh_token: token })
+      if (res.ok) {
+        write(fromTokens(await res.json()))
+        return true
+      }
+    } catch { /* offline or expired */ }
+    return false
+  })
+}
+
 async function post(path, body) {
   await ensureBackendReady()
   if (!site.auth.apiUrl) return Promise.reject(new Error('Auth API unavailable'))
