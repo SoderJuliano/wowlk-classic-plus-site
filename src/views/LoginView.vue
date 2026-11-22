@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import AuthLayout from '../components/auth/AuthLayout.vue'
 import TextField from '../components/auth/TextField.vue'
 import HoneypotField from '../components/ui/HoneypotField.vue'
@@ -11,7 +11,7 @@ const form = reactive({ login: '', password: '' })
 const website = ref('')
 const busy = ref(false)
 const error = ref('')
-const available = isLoginAvailable()
+const available = computed(() => isLoginAvailable())
 const guard = createBotGuard()
 
 async function submit() {

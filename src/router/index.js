@@ -10,6 +10,7 @@ const routes = [
   auth('register-success', '/register/success', () => import('../views/RegisterSuccessView.vue'), 'Registration Received'),
   auth('login', '/login', () => import('../views/LoginView.vue'), 'Login'),
   auth('forgot-password', '/forgot-password', () => import('../views/ForgotPasswordView.vue'), 'Recover Password'),
+  auth('donate', '/donate', () => import('../views/DonateView.vue'), 'Become a Supporter'),
   auth('terms', '/terms', () => import('../views/LegalView.vue'), 'Terms of Use'),
   auth('privacy', '/privacy', () => import('../views/LegalView.vue'), 'Privacy Policy'),
   { name: 'not-found', path: '/:pathMatch(.*)*', component: () => import('../views/NotFoundView.vue'), meta: { title: 'Not Found', noindex: true } }

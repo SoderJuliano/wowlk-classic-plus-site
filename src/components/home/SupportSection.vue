@@ -3,6 +3,9 @@ import { site, STAGE } from '../../config/site.js'
 import SectionHead from '../ui/SectionHead.vue'
 import AppIcon from '../ui/AppIcon.vue'
 import StageBadge from '../ui/StageBadge.vue'
+import { isDonationAvailable } from '../../services/donationService.js'
+
+const donationsOpen = isDonationAvailable()
 
 const never = ['Competitive advantages', 'Better gear or stats', 'Gold, boosts or XP multipliers', 'Anything required to play']
 const pass = [
@@ -30,7 +33,9 @@ const pass = [
           <h3>Voluntary contributions</h3>
           <p>Supporting is entirely optional — a contribution, never a purchase required to play.</p>
           <p class="sup__perk"><AppIcon name="chip" :size="18" /> Supporters may receive early access to the 64-bit client during testing periods, subject to availability and project rules.</p>
-          <a v-if="site.links.support" :href="site.links.support" class="btn btn--gold" target="_blank" rel="noopener noreferrer">Support the project</a>
+          <p class="sup__cta-line">Become a supporter and unlock unreleased features before everyone else.</p>
+          <RouterLink v-if="donationsOpen" :to="{ name: 'donate' }" class="btn btn--gold">Become a Supporter</RouterLink>
+          <a v-else-if="site.links.support" :href="site.links.support" class="btn btn--gold" target="_blank" rel="noopener noreferrer">Support the project</a>
           <span v-else class="has-tooltip">
             <button type="button" class="btn btn--gold" disabled aria-describedby="sup-tip">Support the project</button>
             <span id="sup-tip" role="tooltip" class="tooltip">Coming Soon</span>
@@ -68,6 +73,7 @@ const pass = [
 .sup__card p { color: var(--text-300); margin: 0; font-size: .95rem; }
 .sup__card .btn, .sup__card .has-tooltip { margin-top: 10px; justify-self: start; }
 .sup__icon { color: var(--gold-300); }
+.sup__card .sup__cta-line { color: var(--gold-100); font-weight: 600; }
 .sup__row { display: flex; justify-content: space-between; align-items: center; }
 .sup__perk { display: flex; gap: 10px; padding: 12px 14px; border-radius: 4px; background: rgba(79, 179, 247, .08); border: 1px solid var(--line); color: var(--ice-100) !important; }
 .sup__perk svg { flex: none; color: var(--ice-300); margin-top: 3px; }

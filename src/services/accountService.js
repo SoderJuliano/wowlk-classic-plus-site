@@ -16,6 +16,7 @@ import { publish } from './abraApi.js'
 import { sealPayload } from './queueCrypto.js'
 import { makeRegistrationData } from './srp6.js'
 import { normalizeEmail, normalizeUsername } from '../utils/validation.js'
+import { ensureBackendReady, isDiscovering } from './backendDiscovery.js'
 
 export const SCHEMA_VERSION = 1
 
@@ -86,7 +87,7 @@ export function subscribeToDownloads({ email }) {
   return send(site.abra.eventsKey, envelope('downloads.subscribe', { email: normalizeEmail(email) }))
 }
 
-export const isLoginAvailable = () => Boolean(site.auth.apiUrl)
+export const isLoginAvailable = () => Boolean(site.auth.apiUrl) || isDiscovering.value || (typeof window !== 'undefined')
 
 /**
  * Login requires a synchronous answer, which a queue cannot give, so it calls the Pikachu API
@@ -94,7 +95,8 @@ export const isLoginAvailable = () => Boolean(site.auth.apiUrl)
  * no cookies, so the request is sent without credentials.
  */
 export async function login({ login: identifier, password }) {
-  if (!isLoginAvailable()) throw loginError('LOGIN_UNAVAILABLE', 'Account login is not available yet.')
+  await ensureBackendReady()
+  if (!site.auth.apiUrl) throw loginError('LOGIN_UNAVAILABLE', 'Account login is not available yet.')
 
   const ctrl = new AbortController()
   const timer = setTimeout(() => ctrl.abort(), 15_000)

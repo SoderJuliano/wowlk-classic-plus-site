@@ -7,11 +7,15 @@
  */
 import { ref } from 'vue'
 import { site } from '../config/site.js'
+import { ensureBackendReady } from './backendDiscovery.js'
 
 const KEY = 'wowlk.session'
 const RECHECK_MS = 5 * 60_000
 
 export const session = ref(read())
+
+/** Short-lived access token, kept in memory only (never in localStorage). */
+let access = null
 
 function read() {
   try {
@@ -31,6 +35,9 @@ function write(value) {
 }
 
 function fromTokens(body) {
+  access = body.access_token
+    ? { token: body.access_token, expiresAt: Date.now() + Number(body.expires_in || 0) * 1000 }
+    : null
   return {
     username: body.user.username,
     refreshToken: body.refresh_token,
@@ -43,7 +50,9 @@ export function startSession(tokens) {
   write(fromTokens(tokens))
 }
 
-function post(path, body) {
+async function post(path, body) {
+  await ensureBackendReady()
+  if (!site.auth.apiUrl) return Promise.reject(new Error('Auth API unavailable'))
   return fetch(`${site.auth.apiUrl}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
@@ -75,11 +84,35 @@ export function revalidateSession() {
 /** Local logout always works; revoking on the server is best effort. */
 export async function endSession() {
   const refreshToken = session.value?.refreshToken
+  access = null
   write(null)
   if (!refreshToken) return
   try {
     await post('/auth/logout', { refresh_token: refreshToken })
   } catch { /* the token still expires on its own */ }
+}
+
+const sessionExpired = () => Object.assign(new Error('Your session has expired. Please log in again.'), { code: 'SESSION_EXPIRED' })
+
+/**
+ * A valid access token for authenticated API calls. Reuses the in-memory one; otherwise rotates the
+ * refresh token inside the lock (other tabs may have rotated it already, so it rereads storage first).
+ */
+export async function getAccessToken() {
+  await ensureBackendReady()
+  if (!site.auth.apiUrl) return Promise.reject(sessionExpired())
+  if (access && access.expiresAt - 30_000 > Date.now() && session.value) return Promise.resolve(access.token)
+  return withLock(async () => {
+    if (access && access.expiresAt - 30_000 > Date.now() && read()) return access.token
+    const current = read()
+    session.value = current
+    if (!current) throw sessionExpired()
+    const res = await post('/auth/refresh', { refresh_token: current.refreshToken })
+    if (res.status === 401 || res.status === 403) { write(null); throw sessionExpired() }
+    if (!res.ok) throw Object.assign(new Error('The server is unreachable right now. Try again in a moment.'), { code: 'UNREACHABLE' })
+    write(fromTokens(await res.json()))
+    return access.token
+  })
 }
 
 if (typeof window !== 'undefined') {

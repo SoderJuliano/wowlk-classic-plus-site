@@ -5,6 +5,7 @@ import SiteLogo from '../ui/SiteLogo.vue'
 import AppIcon from '../ui/AppIcon.vue'
 import { NAV_LINKS } from './navLinks.js'
 import { session, endSession } from '../../services/session.js'
+import { supporter, refreshSupporter, isDonationAvailable } from '../../services/donationService.js'
 
 const scrolled = ref(false)
 const open = ref(false)
@@ -14,6 +15,9 @@ const onScroll = () => { scrolled.value = window.scrollY > 24 }
 onMounted(() => { onScroll(); window.addEventListener('scroll', onScroll, { passive: true }) })
 onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 watch(() => route.fullPath, () => { open.value = false })
+const donationsOpen = isDonationAvailable()
+// The badge is private: only the logged-in player sees it, in their own header.
+watch(() => session.value?.username, () => refreshSupporter(), { immediate: true })
 watch(open, (v) => document.body.style.setProperty('overflow', v ? 'hidden' : ''))
 </script>
 
@@ -30,7 +34,11 @@ watch(open, (v) => document.body.style.setProperty('overflow', v ? 'hidden' : ''
         </ul>
         <div class="hdr__actions">
           <template v-if="session">
-            <span class="hdr__link hdr__user"><AppIcon name="user" :size="16" /> {{ session.username }}</span>
+            <span class="hdr__link hdr__user">
+              <AppIcon name="user" :size="16" /> {{ session.username }}
+              <span v-if="supporter?.supporter" class="hdr__badge" title="Thank you for supporting the realm!"><AppIcon name="crown" :size="12" /> Supporter</span>
+            </span>
+            <RouterLink v-if="!supporter?.supporter && donationsOpen" :to="{ name: 'donate' }" class="hdr__link hdr__support"><AppIcon name="heart" :size="16" /> Support</RouterLink>
             <button type="button" class="btn btn--ghost btn--sm" @click="endSession">Log Out</button>
           </template>
           <template v-else>
@@ -77,6 +85,12 @@ watch(open, (v) => document.body.style.setProperty('overflow', v ? 'hidden' : ''
 .hdr__link:hover { color: var(--gold-100); }
 .hdr__user { color: var(--gold-100); cursor: default; }
 .hdr__user::after { display: none; }
+.hdr__badge {
+  display: inline-flex; align-items: center; gap: 4px; margin-left: 4px; padding: 3px 7px; border-radius: 999px;
+  font: 700 .62rem/1 var(--font-body); letter-spacing: .08em; color: var(--bg-900);
+  background: linear-gradient(135deg, var(--gold-200), var(--gold-400)); box-shadow: 0 0 12px -2px var(--gold-glow);
+}
+.hdr__support { color: var(--gold-200); }
 .hdr__link:hover::after { transform: scaleX(1); }
 .hdr__actions { display: flex; align-items: center; gap: 10px; }
 .hdr__toggle { display: none; background: none; border: 1px solid var(--line-strong); color: var(--text-100); border-radius: 6px; padding: 6px; cursor: pointer; }

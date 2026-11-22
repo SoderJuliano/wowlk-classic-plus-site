@@ -1,3 +1,5 @@
+import { reactive } from 'vue'
+
 /**
  * Single source of truth for every project-level setting.
  * Components must read from here — never hard-code these values elsewhere.
@@ -7,6 +9,19 @@ const env = import.meta.env ?? {}
 const pick = (key, fallback) => {
   const v = env[key]
   return v === undefined || v === '' ? fallback : v
+}
+
+let initialBase = ''
+if (typeof window !== 'undefined') {
+  try {
+    initialBase = localStorage.getItem('wowlk.pikachu_url') || ''
+  } catch {}
+}
+const initialAuthUrl = pick('VITE_AUTH_API_URL', initialBase ? `${initialBase}/launcher/v1` : '')
+
+/** https://host/launcher/v1 → https://host/donation/v1 (same Pikachu). Anything else → '' (set VITE_DONATION_API_URL). */
+export function donationUrlFrom(authUrl) {
+  return /\/launcher\/v1\/?$/.test(authUrl || '') ? authUrl.replace(/\/launcher\/v1\/?$/, '/donation/v1') : ''
 }
 
 /** Release states shared by downloads, launcher and features. */
@@ -37,7 +52,7 @@ export const RELEASE_LABEL = Object.freeze({
   [RELEASE.COMING_SOON]: 'Coming Soon'
 })
 
-export const site = Object.freeze({
+export const site = reactive({
   name: 'WoW Classic Plus LK',
   shortName: 'Classic Plus LK',
   slug: 'wow-classic-plus-lk',
@@ -163,9 +178,17 @@ export const site = Object.freeze({
   },
 
   auth: {
-    /** Pikachu login API, e.g. https://host/launcher/v1. Empty = the login page says it is unavailable. */
-    apiUrl: pick('VITE_AUTH_API_URL', ''),
+    /** Pikachu login API, e.g. https://host/launcher/v1. Discovered dynamically from Abra API if empty. */
+    apiUrl: initialAuthUrl,
     termsVersion: '2026-10-31'
+  },
+
+  /** Donations (Mercado Pago through Pikachu). Defaults to the login API host at /donation/v1. */
+  donation: {
+    apiUrl: pick('VITE_DONATION_API_URL', donationUrlFrom(initialAuthUrl)),
+    /** Suggested amounts in BRL. */
+    presets: [10, 25, 50, 100],
+    pollMs: 4_000
   }
 })
 
