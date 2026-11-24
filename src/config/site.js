@@ -141,9 +141,9 @@ export const site = reactive({
   /** The launcher installs the game (36 GB) and keeps it updated. */
   launcher: {
     status: pick('VITE_LAUNCHER_STATUS', RELEASE.AVAILABLE),
-    version: '0.1.48',
-    windowsUrl: pick('VITE_LAUNCHER_WINDOWS_URL', 'https://pub-aca87790200a4237af40519010e23d8c.r2.dev/OLK-Plus-Launcher-Setup-0.1.48.exe'),
-    linuxUrl: pick('VITE_LAUNCHER_LINUX_URL', 'https://pub-aca87790200a4237af40519010e23d8c.r2.dev/OLK-Plus-Launcher-0.1.48.AppImage')
+    version: '0.1.49',
+    windowsUrl: pick('VITE_LAUNCHER_WINDOWS_URL', 'https://pub-aca87790200a4237af40519010e23d8c.r2.dev/OLK-Plus-Launcher-Setup-0.1.49.exe'),
+    linuxUrl: pick('VITE_LAUNCHER_LINUX_URL', 'https://pub-aca87790200a4237af40519010e23d8c.r2.dev/OLK-Plus-Launcher-0.1.49.AppImage')
   },
 
   /** Upscaling technologies for the 64-bit client. Update the stage as work progresses. */
