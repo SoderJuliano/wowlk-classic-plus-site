@@ -1,18 +1,21 @@
 <script setup>
 import { computed } from 'vue'
 import { site, RELEASE } from '../../config/site.js'
+import { detectRegion } from '../../services/donationService.js'
 import AppIcon from '../ui/AppIcon.vue'
 import StageBadge from '../ui/StageBadge.vue'
 import SiteLogo from '../ui/SiteLogo.vue'
 
 const ready = computed(() => site.launcher.status === RELEASE.AVAILABLE && !!(site.launcher.windowsUrl || site.launcher.linuxUrl))
+const isBR = detectRegion() === 'BR'
 const perks = [
   { icon: 'download', text: 'Simplified installation' },
   { icon: 'refresh', text: 'Automatic updates' },
   { icon: 'fileCheck', text: 'File verification' },
   { icon: 'folder', text: 'Version management' },
   { icon: 'switch', text: 'Choose 32-bit or 64-bit client' },
-  { icon: 'cloud', text: 'Centralized update downloads' }
+  { icon: 'cloud', text: 'Centralized update downloads' },
+  ...(isBR ? [{ icon: 'globe', text: 'Tradução para Português (Brasil) em 1 clique' }] : [])
 ]
 </script>
 

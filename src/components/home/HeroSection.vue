@@ -3,8 +3,10 @@ import NorthrendScene from '../ui/NorthrendScene.vue'
 import AppIcon from '../ui/AppIcon.vue'
 import { site } from '../../config/site.js'
 import { useDownloadModal } from '../../composables/useDownloadModal.js'
+import { detectRegion } from '../../services/donationService.js'
 
 const { requestDownload } = useDownloadModal()
+const isBR = detectRegion() === 'BR'
 </script>
 
 <template>
@@ -38,6 +40,7 @@ const { requestDownload } = useDownloadModal()
         <li v-if="site.realm.status === 'online'" class="is-live">
           <span class="dot" aria-hidden="true" /> Realm online<template v-if="site.realm.latencyMs"> · ~{{ site.realm.latencyMs }} ms</template>
         </li>
+        <li v-if="isBR" class="is-ptbr"><AppIcon name="globe" :size="16" /> Tradução PT-BR disponível no Launcher</li>
         <li><AppIcon name="chip" :size="16" /> Native 64-bit client in development</li>
       </ul>
     </div>
@@ -87,6 +90,8 @@ const { requestDownload } = useDownloadModal()
 .hero__pills li { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; font-size: .82rem; color: var(--text-200); background: rgba(5, 10, 16, .55); border: 1px solid var(--line); backdrop-filter: blur(6px); }
 .hero__pills svg { color: var(--ice-300); }
 .hero__pills .is-live { color: #c8f7de; border-color: rgba(95, 224, 160, .45); }
+.hero__pills .is-ptbr { color: var(--gold-100); border-color: rgba(233, 196, 106, .5); background: rgba(233, 196, 106, .12); }
+.hero__pills .is-ptbr svg { color: var(--gold-300); }
 .hero__pills .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 10px var(--ok); }
 .hero__scroll { position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%); width: 26px; height: 42px; border: 1.5px solid rgba(214, 239, 255, .45); border-radius: 14px; }
 .hero__scroll span { position: absolute; left: 50%; top: 8px; width: 3px; height: 8px; margin-left: -1.5px; border-radius: 2px; background: var(--ice-200); animation: wheel 2s var(--ease) infinite; }
