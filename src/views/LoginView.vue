@@ -1,11 +1,19 @@
 <script setup>
 import { computed, reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import AuthLayout from '../components/auth/AuthLayout.vue'
 import TextField from '../components/auth/TextField.vue'
 import HoneypotField from '../components/ui/HoneypotField.vue'
 import { login, isLoginAvailable } from '../services/accountService.js'
 import { createBotGuard } from '../utils/botGuard.js'
 import { session, startSession } from '../services/session.js'
+
+const route = useRoute()
+const router = useRouter()
+const redirectTo = computed(() => {
+  const raw = typeof route.query.redirect === 'string' ? route.query.redirect : ''
+  return raw.startsWith('/') && !raw.startsWith('//') ? raw : ''
+})
 
 const form = reactive({ login: '', password: '' })
 const website = ref('')
@@ -21,6 +29,7 @@ async function submit() {
   busy.value = true
   try {
     startSession(await login(form))
+    if (redirectTo.value) router.replace(redirectTo.value)
   } catch (e) {
     // The service only says "invalid" for wrong credentials, never whether an account exists.
     error.value = e.message
@@ -38,7 +47,7 @@ async function submit() {
     </p>
     <template v-if="session">
       <p class="alert alert--success" role="status">Logged in as <strong>{{ session.username }}</strong>. Your account is active: sign in with the launcher and start your adventure.</p>
-      <RouterLink to="/" class="btn btn--gold btn--block">Back to Home</RouterLink>
+      <RouterLink :to="redirectTo || '/'" class="btn btn--gold btn--block">{{ redirectTo ? 'Continue' : 'Back to Home' }}</RouterLink>
     </template>
 
     <form v-else novalidate @submit.prevent="submit">

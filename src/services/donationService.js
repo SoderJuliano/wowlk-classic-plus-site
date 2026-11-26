@@ -58,6 +58,38 @@ export const createCardPayment = (payload, idempotencyKey) =>
 
 export const getPayment = (id) => call(`/payments/${encodeURIComponent(id)}`)
 
+// ------------------------------------------------------------------ 64-bit client early access (wowsixtyfordev)
+
+let client64ConfigPromise = null
+export function getClient64DonationConfig() {
+  client64ConfigPromise ??= call('/client64/config', { auth: false }).catch((e) => { client64ConfigPromise = null; throw e })
+  return client64ConfigPromise
+}
+
+export const createClient64PixPayment = (idempotencyKey) =>
+  call('/client64/payments/pix', { method: 'POST', idempotencyKey })
+
+export const createClient64CardPayment = (payload, idempotencyKey) =>
+  call('/client64/payments/card', { method: 'POST', body: payload, idempotencyKey })
+
+export const getClient64Payment = (id) => call(`/client64/payments/${encodeURIComponent(id)}`)
+
+export const client64Supporter = ref(null)
+let client64SupporterFor = null
+
+export async function refreshClient64Supporter({ force = false } = {}) {
+  const username = session.value?.username
+  if (!username || !isDonationAvailable()) { client64Supporter.value = null; client64SupporterFor = null; return null }
+  if (!force && client64SupporterFor === username && client64Supporter.value) return client64Supporter.value
+  try {
+    client64Supporter.value = await call('/client64/me')
+    client64SupporterFor = username
+  } catch {
+    client64Supporter.value = null
+  }
+  return client64Supporter.value
+}
+
 /** Dev only (Pikachu with donation.dev-tools): plays Mercado Pago's role and delivers a signed webhook. */
 export const simulateWebhook = (id) => call(`/dev/simulate-webhook/${encodeURIComponent(id)}`, { method: 'POST', auth: false })
 

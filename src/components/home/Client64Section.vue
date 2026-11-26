@@ -137,6 +137,11 @@ const benefits = [
         </article>
       </div>
       <p class="choice__foot">Your choice. The goal is to offer options — never to force anyone onto the experimental client.</p>
+      <div v-if="$route.name !== 'client64'" class="c64__more">
+        <RouterLink :to="{ name: 'client64' }" class="btn btn--frost">
+          <AppIcon name="sparkles" :size="16" /> Early Access & Development Log
+        </RouterLink>
+      </div>
     </div>
   </section>
 </template>
@@ -205,6 +210,7 @@ const benefits = [
 .choice__card--next { box-shadow: 0 0 60px -20px var(--ice-glow); }
 .choice__or { font: 700 .8rem/1 var(--font-display); letter-spacing: .2em; text-transform: uppercase; color: var(--gold-300); width: 48px; height: 48px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--gold-500); background: var(--bg-900); }
 .choice__foot { text-align: center; color: var(--text-300); margin: 22px 0 0; font-style: italic; }
+.c64__more { display: flex; justify-content: center; margin-top: 24px; }
 
 @media (max-width: 960px) {
   .plats { grid-template-columns: 1fr; }
