@@ -8,13 +8,24 @@ import Client64Changelog from '../components/client64/Client64Changelog.vue'
 import AppIcon from '../components/ui/AppIcon.vue'
 import bg from '../assets/bg/client64.webp'
 import { CLIENT64_COMMITS, CLIENT64_CHANGELOG_DATE } from '../data/client64Commits.js'
-import { detectRegion, client64Supporter, refreshClient64Supporter } from '../services/donationService.js'
+import { detectRegion, client64Supporter, refreshClient64Supporter, getClient64DonationConfig } from '../services/donationService.js'
 import { session } from '../services/session.js'
 
 const route = useRoute()
 const router = useRouter()
 const isPt = computed(() => detectRegion() === 'BR')
 const donateOpen = ref(false)
+
+// The price always comes from the server (the same value the payment charges).
+const price = ref(99.9)
+const priceUsd = ref(16.82)
+getClient64DonationConfig().then((c) => {
+  if (c?.fixedAmount != null) price.value = Number(c.fixedAmount)
+  if (c?.usdEquivalent != null) priceUsd.value = Number(c.usdEquivalent)
+}).catch(() => {})
+const brl = computed(() => `R$ ${price.value.toFixed(2).replace('.', ',')}`)
+const brlEn = computed(() => `R$ ${price.value.toFixed(2)}`)
+const usdText = computed(() => `≈ US$ ${priceUsd.value.toFixed(2)}`)
 
 function openDonate() {
   donateOpen.value = true
@@ -54,8 +65,8 @@ watch(() => session.value?.username, () => {
           <h2 id="pizza-title" class="gold-text">{{ isPt ? 'Me pague uma pizza :D' : 'Buy me a pizza :D' }}</h2>
           <p>
             {{ isPt
-              ? 'Gostou do avanço do Cliente 64-bit? Se quiser contribuir com o projeto, toda doação de R$ 99,90 é convertida em tokens para melhorar e acelerar o desenvolvimento.'
-              : 'Excited about the 64-bit Client? If you would like to contribute, every R$ 99.90 donation is converted into tokens to improve and accelerate development.' }}
+              ? `Gostou do avanço do Cliente 64-bit? Se quiser contribuir com o projeto, toda doação de ${brl} é convertida em tokens para melhorar e acelerar o desenvolvimento.`
+              : `Excited about the 64-bit Client? If you would like to contribute, every ${brlEn} donation is converted into tokens to improve and accelerate development.` }}
           </p>
           <p class="pizza__note">
             <AppIcon name="info" :size="16" />
@@ -74,12 +85,12 @@ watch(() => session.value?.username, () => {
         <div class="pizza__cta">
           <div class="pizza__price">
             <span class="pizza__price-tag">{{ isPt ? 'Contribuição fixa' : 'Fixed contribution' }}</span>
-            <strong class="gold-text">{{ isPt ? 'R$ 99,90' : '≈ US$ 16.82' }}</strong>
-            <small>{{ isPt ? 'Pix no Brasil · Cartão fora do Brasil' : 'R$ 99.90 via Mercado Pago · Card / Pix' }}</small>
+            <strong class="gold-text">{{ isPt ? brl : usdText }}</strong>
+            <small>{{ isPt ? 'Pix no Brasil · Cartão fora do Brasil' : `${brlEn} via Mercado Pago · Card / Pix` }}</small>
           </div>
           <button type="button" class="btn btn--gold btn--lg pizza__btn" @click="openDonate">
             <AppIcon name="heart" :size="18" />
-            {{ isPt ? 'Me pague uma pizza · R$ 99,90' : 'Buy me a pizza · R$ 99.90' }}
+            {{ isPt ? `Me pague uma pizza · ${brl}` : `Buy me a pizza · ${brlEn}` }}
           </button>
           <a href="#client64-changelog" class="pizza__log-link">
             {{ isPt
