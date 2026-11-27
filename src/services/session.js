@@ -117,6 +117,15 @@ export async function endSession() {
   } catch { /* the token still expires on its own */ }
 }
 
+/**
+ * Forgets the in-memory access token. Every refresh (another tab, the launcher's #sso hand-off)
+ * replaces the session's access token on the server, so the copy this tab holds can be dead long
+ * before its expiry: the API then answers 401 and the caller renews once and retries.
+ */
+export function invalidateAccessToken(stale) {
+  if (access && (!stale || access.token === stale)) access = null
+}
+
 const sessionExpired = () => Object.assign(new Error('Your session has expired. Please log in again.'), { code: 'SESSION_EXPIRED' })
 
 /**

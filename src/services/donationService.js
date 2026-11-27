@@ -10,7 +10,7 @@
  */
 import { ref } from 'vue'
 import { site } from '../config/site.js'
-import { session, getAccessToken } from './session.js'
+import { session, getAccessToken, invalidateAccessToken } from './session.js'
 import { ensureBackendReady, isDiscovering } from './backendDiscovery.js'
 
 const SDK_URL = 'https://sdk.mercadopago.com/js/v2'
@@ -20,13 +20,14 @@ export const isDonationAvailable = () => Boolean(site.donation.apiUrl) || isDisc
 const apiError = (code, message, extra = {}) => Object.assign(new Error(message), { code, ...extra })
 const UNREACHABLE = 'The donation service is unreachable right now. Try again in a moment.'
 
-async function call(path, { method = 'GET', body, auth = true, idempotencyKey } = {}) {
+async function call(path, { method = 'GET', body, auth = true, idempotencyKey, retried = false } = {}) {
   await ensureBackendReady()
   if (!site.donation.apiUrl) throw apiError('UNAVAILABLE', 'Donations are not available yet.')
   const headers = { Accept: 'application/json', 'ngrok-skip-browser-warning': 'true' }
   if (body !== undefined) headers['Content-Type'] = 'application/json'
   if (idempotencyKey) headers['X-Idempotency-Key'] = idempotencyKey
-  if (auth) headers.Authorization = `Bearer ${await getAccessToken()}`
+  const token = auth ? await getAccessToken() : null
+  if (auth) headers.Authorization = `Bearer ${token}`
   let res
   try {
     res = await fetch(`${site.donation.apiUrl}${path}`, {
@@ -38,6 +39,13 @@ async function call(path, { method = 'GET', body, auth = true, idempotencyKey } 
   let data = null
   try { data = await res.json() } catch { /* empty or HTML (tunnel down) */ }
   if (res.ok) return data
+  // Access token replaced by a refresh elsewhere (other tab, launcher #sso): renew once and retry.
+  // Only if the renewal itself fails does the player have to log in again (getAccessToken throws).
+  // Same idempotency key, so a retried Pix/card request never charges twice.
+  if (res.status === 401 && auth && !retried) {
+    invalidateAccessToken(token)
+    return call(path, { method, body, auth, idempotencyKey, retried: true })
+  }
   const code = data?.error?.code
   // Messages from the API are written to be shown to the player.
   throw apiError(code ?? 'UNREACHABLE', data?.error?.message ?? UNREACHABLE, { status: res.status })
