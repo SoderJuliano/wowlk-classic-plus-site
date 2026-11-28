@@ -1,10 +1,190 @@
 /**
  * Static snapshot of all features and fixes made on the native 64-bit client
- * up to 2026-11-25 (generated from soder-nextgen git history).
+ * up to 2026-11-28 (generated from soder-nextgen git history).
  */
-export const CLIENT64_CHANGELOG_DATE = "2026-11-25"
+export const CLIENT64_CHANGELOG_DATE = "2026-11-28"
 
 export const CLIENT64_COMMITS = [
+  {
+    "date": "2026-11-28",
+    "hash": "7e4c4c4a",
+    "type": "perf",
+    "title": "perf(shadows): far cascade redrawn ~3% of frames instead of ~85% - hold the shadow sun and the far centre"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "75cb9ed9",
+    "type": "perf",
+    "title": "perf(spawn): one async upload batch per creature spawn, and keep its pre-decoded art for the NPC overrides"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "b165f20b",
+    "type": "perf",
+    "title": "perf(spawn): hand the parsed creature model to the renderer instead of deep-copying it"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "57969e53",
+    "type": "other",
+    "title": "diag: SODER_NEXTGEN_SLOW_STAGE_MS - name update/render stages slower than N ms (default 50)"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "7ad85762",
+    "type": "perf",
+    "title": "perf(hair): reuse a model's hair data across NPC displays - no 110 ms hitch per new NPC"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "3478419c",
+    "type": "fix",
+    "title": "fix(fx): ground (Base) kits stand upright under the unit, turned only by its facing"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "5086d375",
+    "type": "fix",
+    "title": "fix(nameplates): no health bar over critters, selected or not"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "7ba5da97",
+    "type": "fix",
+    "title": "fix(fx): lamps and lanterns keep their authored light - no flame floors"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "4f78c2e0",
+    "type": "fix",
+    "title": "fix(fx): chimney/forge smoke is the model's own, not invented white puffs and sparks"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "099b948a",
+    "type": "feat",
+    "title": "feat(fx): retail spiked ring for Battle Shout / Commanding Shout; SODER_NEXTGEN_TEST_EFFECT"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "69ab3f3e",
+    "type": "fix",
+    "title": "fix(portrait): frame every player portrait with the model's own portrait camera"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "40e06945",
+    "type": "feat",
+    "title": "feat(fx): M2 model particles - emitters that throw copies of a model"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "e831140f",
+    "type": "fix",
+    "title": "fix(nameplates): no health bar over a selected friendly NPC; far names never over nearer units"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "eb8965cf",
+    "type": "fix",
+    "title": "fix(cursor): loot bag over lootable corpses, skinning knife over skinnable ones"
+  },
+  {
+    "date": "2026-11-28",
+    "hash": "35095d0b",
+    "type": "perf",
+    "title": "perf(render): cut the per-pixel light loop, frustum-cull actor animation and cache the far shadow cascade"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "02ab107d",
+    "type": "fix",
+    "title": "fix(windows): fix MSYS2 UCRT64 MinGW build (NvCloth, FSR2 wcscpy_s, aligned_alloc, near macro, cstring)"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "de36e5f2",
+    "type": "fix",
+    "title": "fix(vkbasalt): use VK_ADD_IMPLICIT_LAYER_PATH + XDG_DATA_DIRS and relative library_path so bundled ReShade loads on any PC"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "7a547c57",
+    "type": "fix",
+    "title": "fix(equipment,assets): render local player and preview shoulders, cloak RightModelTexture, and BLP basename fallback"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "9c5e04f3",
+    "type": "fix",
+    "title": "fix(camera,vkbasalt): fix third-person camera collision/teleports/mount zoom and vkBasalt path rewrite loop"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "97561fcd",
+    "type": "perf",
+    "title": "perf(hair): LOD de 15 jardas + solver Enhanced reduzido (P0-1/P0-2)"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "bc598658",
+    "type": "feat",
+    "title": "feat(graphics): portable vkBasalt layer and ReShade shaders with dynamic runtime path and F11 toggle"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "5de1ff09",
+    "type": "fix",
+    "title": "fix(auth): Windows HTTPS trusts the system root certificates; gate test links SDL"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "158c2230",
+    "type": "fix",
+    "title": "fix(auth): launcher gate message opens in front on KDE Wayland"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "f2776364",
+    "type": "fix",
+    "title": "fix(camera): prevent Dwarf/Gnome camera near plane from clipping under terrain, raised snow banks, or walls"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "7e559eea",
+    "type": "fix",
+    "title": "fix(rendering): eliminate road-edge pits, blocky sand rim saturation, and Y-up floating snow weather"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "5702d3a0",
+    "type": "feat",
+    "title": "feat(auth): launcher-only start for the beta build (signed handshake + heartbeat)"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "e07113c0",
+    "type": "feat",
+    "title": "feat(rendering): half-above fluffy snow blanket, smooth road/slope taper, and height/weight-scaled Gnome sink"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "4397e874",
+    "type": "fix",
+    "title": "fix(rendering): fix sand/snow motion warping, seams, foot bone grounding, road decals, and RDR2 knee-deep snow"
+  },
+  {
+    "date": "2026-11-27",
+    "hash": "ec3a6259",
+    "type": "feat",
+    "title": "feat(rendering): true next-gen sand/snow GPU deformation, PBR terrain, particles, and near CSM shadows"
+  },
+  {
+    "date": "2026-11-26",
+    "hash": "13bec8cc",
+    "type": "feat",
+    "title": "feat(rendering): footprints use the texture colour so relief prints can lighten the ground"
+  },
   {
     "date": "2026-11-25",
     "hash": "7094543c",
