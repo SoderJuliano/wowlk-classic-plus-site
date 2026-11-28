@@ -12,12 +12,12 @@ const ledger = [
   {
     stage: STAGE.IN_DEVELOPMENT,
     title: 'In development',
-    items: ['Native 64-bit client (Windows)', 'Native Linux build (early build running)', 'Ray tracing & FSR (experimental)', 'HD models & visual upgrades', 'Official launcher']
+    items: ['Native 64-bit client (Linux & Windows — Early Access)', 'Ray tracing & AMD FSR 1 / 3 / 4.1 (experimental)', 'HD models & visual upgrades', 'Ongoing 64-bit optimizations']
   },
   {
     stage: STAGE.PLANNED,
     title: 'Planned',
-    items: ['macOS client', 'Full FSR & DLSS 5 support', 'Battle Pass (free + cosmetic)', 'Seasonal events']
+    items: ['macOS client', 'NVIDIA DLSS 5 support', 'Battle Pass (free + cosmetic)', 'Seasonal events']
   }
 ]
 </script>

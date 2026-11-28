@@ -1,5 +1,5 @@
 <script setup>
-import { site, STAGE } from '../../config/site.js'
+import { site, STAGE, RELEASE } from '../../config/site.js'
 import SectionHead from '../ui/SectionHead.vue'
 import AppIcon from '../ui/AppIcon.vue'
 import StageBadge from '../ui/StageBadge.vue'
@@ -12,7 +12,7 @@ const benefits = [
   { icon: 'gauge', title: 'Better Performance Potential', text: 'More headroom for high refresh rates, crowded cities and large-scale PvP as development progresses.' },
   { icon: 'layers', title: 'Foundation for Advanced Graphics', text: 'A technical base for rendering improvements that are not practical inside the traditional client.' },
   { icon: 'unlock', title: 'Freedom to Evolve', text: 'Owning the client build gives the project room to fix, improve and extend it over time.' },
-  { icon: 'upscale', title: 'Planned Upscaling Support', text: 'Compatibility with modern upscaling technologies is planned for the 64-bit client.' }
+  { icon: 'upscale', title: 'Modern Upscaling Support', text: 'AMD FSR 1, FSR 3 and FSR 4.1 are already working and stable (experimental), with NVIDIA DLSS 5 planned.' }
 ]
 </script>
 
@@ -29,11 +29,11 @@ const benefits = [
         frost
       >
         <p>
-          We are developing a new generation of the Wrath of the Lich King client — a native 64-bit architecture,
-          compiled to deliver a modern experience on today's operating systems. A capability that sets the project
-          apart from the traditional 32-bit clients used across private servers.
+          Our new generation of the Wrath of the Lich King client is already available in early access and remains
+          in active development — a native 64-bit architecture compiled to deliver a modern experience on today's
+          operating systems, setting the project apart from the traditional 32-bit clients used across private servers.
         </p>
-        <StageBadge :value="STAGE.IN_DEVELOPMENT" />
+        <StageBadge :value="RELEASE.EARLY_ACCESS" label="Early Access · In development" />
       </SectionHead>
 
       <!-- Platforms -->
@@ -46,11 +46,7 @@ const benefits = [
           <div class="plat__icon"><AppIcon :name="p.id" :size="p.highlight ? 56 : 46" :label="p.name" /></div>
           <h3>{{ p.name }}</h3>
           <p class="plat__line">{{ p.line }}</p>
-          <p v-if="p.id === 'linux'" class="plat__extra">
-            Compiled natively for Linux — it does not depend exclusively on Wine or Proton.
-            An early build is already running natively.
-          </p>
-          <p v-if="p.stage === STAGE.PLANNED" class="plat__extra">On the roadmap. Not available yet — no release date announced.</p>
+          <p v-if="p.extra" class="plat__extra">{{ p.extra }}</p>
           <StageBadge :value="p.stage" />
         </article>
       </div>
@@ -58,13 +54,13 @@ const benefits = [
       <!-- Early build footage -->
       <div v-reveal class="early">
         <div class="early__copy">
-          <p class="eyebrow">Work in progress</p>
-          <h3 class="title-lg frost-text">Already Running on Linux</h3>
+          <p class="eyebrow">Live in early access</p>
+          <h3 class="title-lg frost-text">Already Running on Linux &amp; Windows</h3>
           <p>
-            A first, still-in-construction version of the 64-bit client running natively on Linux —
-            with <strong>ray tracing</strong> and <strong>FSR</strong> enabled.
+            Available now through the launcher and actively evolving — footage of the native 64-bit client running on
+            Linux with <strong>ray tracing</strong> and <strong>FSR</strong> enabled.
           </p>
-          <p class="early__small">Early development footage. Visuals, performance and features will change before release.</p>
+          <p class="early__small">Early access development footage. Visuals, performance and features continue to evolve with each patch.</p>
         </div>
         <VideoEmbed v-bind="site.videos.nativeLinux" />
       </div>
@@ -102,8 +98,8 @@ const benefits = [
         <div class="ups__head">
           <h3><AppIcon name="sparkles" :size="22" /> Graphics technologies</h3>
           <p>
-            Ray tracing and FSR are already enabled in the early Linux build shown above (experimental). Support for each
-            version below is planned or in progress. Availability depends on GPU, drivers, implementation and compatibility.
+            Ray tracing and AMD FSR (1, 3 and 4.1) are already working and stable in the 64-bit client (marked experimental
+            while we keep refining performance and visuals). NVIDIA DLSS 5 is planned. Availability depends on GPU, drivers and compatibility.
           </p>
         </div>
         <ul class="ups__list">
@@ -131,9 +127,9 @@ const benefits = [
         <div class="choice__or" aria-hidden="true">or</div>
         <article v-reveal="100" class="choice__card choice__card--next panel panel--frost">
           <span class="choice__bits frost-text">64<small>-bit</small></span>
-          <StageBadge :value="STAGE.IN_DEVELOPMENT" />
+          <StageBadge :value="RELEASE.EARLY_ACCESS" label="Early Access · In development" />
           <h3>Next-generation client</h3>
-          <p>The future of the project — modern architecture, native Linux, and a path to advanced graphics.</p>
+          <p>Already available in early access and actively evolving — modern 64-bit architecture, native Linux and Windows builds, and advanced graphics.</p>
         </article>
       </div>
       <p class="choice__foot">Your choice. The goal is to offer options — never to force anyone onto the experimental client.</p>

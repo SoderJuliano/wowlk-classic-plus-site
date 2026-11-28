@@ -51,9 +51,9 @@ watch(() => session.value?.username, () => {
 <template>
   <PageBanner
     :image="bg" position="65% 40%"
-    :eyebrow="isPt ? 'Acesso antecipado · Em desenvolvimento' : 'Early access · In development'"
+    :eyebrow="isPt ? 'Lançado em acesso antecipado · Em desenvolvimento' : 'Launched in Early Access · In development'"
     :title="isPt ? 'O Cliente Nativo 64-bit' : 'The Native 64-bit Client'"
-    :subtitle="isPt ? 'Uma nova geração do cliente Wrath of the Lich King para Windows e Linux.' : 'A new generation of the Wrath client for Windows and Linux.'"
+    :subtitle="isPt ? 'Já disponível para Linux e Windows (compilação Windows funcional, um pouco atrás do Linux nos patches) e em desenvolvimento contínuo.' : 'Already available for Linux and Windows (functional Windows build, slightly behind Linux on patches) and in active development.'"
   />
 
   <!-- Voluntary contribution suggestion ("Me pague uma pizza :D" — R$ 99,90) -->

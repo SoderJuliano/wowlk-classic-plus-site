@@ -131,8 +131,8 @@ export const site = reactive({
     client64: {
       id: 'client64',
       title: 'WoW Classic Plus LK — 64-bit',
-      subtitle: 'Next-generation client',
-      status: pick('VITE_DOWNLOAD_64_STATUS', RELEASE.COMING_SOON),
+      subtitle: 'Next-generation client (Early Access)',
+      status: pick('VITE_DOWNLOAD_64_STATUS', RELEASE.EARLY_ACCESS),
       url: pick('VITE_DOWNLOAD_64_URL', ''),
       platforms: ['windows', 'linux']
     }
@@ -148,24 +148,37 @@ export const site = reactive({
 
   /** Upscaling technologies for the 64-bit client. Update the stage as work progresses. */
   upscaling: [
-    { id: 'rt', vendor: 'Rendering', name: 'Ray Tracing', stage: STAGE.EXPERIMENTAL, note: 'Running in the early Linux build' },
-    { id: 'fsr1', vendor: 'AMD', name: 'FSR 1', stage: STAGE.PLANNED },
-    { id: 'fsr3', vendor: 'AMD', name: 'FSR 3', stage: STAGE.PLANNED },
-    { id: 'fsr41', vendor: 'AMD', name: 'FSR 4.1', stage: STAGE.PLANNED },
+    { id: 'rt', vendor: 'Rendering', name: 'Ray Tracing', stage: STAGE.EXPERIMENTAL, note: 'Running in the 64-bit build' },
+    { id: 'fsr1', vendor: 'AMD', name: 'FSR 1', stage: STAGE.EXPERIMENTAL, note: 'Stable in the 64-bit build' },
+    { id: 'fsr3', vendor: 'AMD', name: 'FSR 3', stage: STAGE.EXPERIMENTAL, note: 'Stable in the 64-bit build' },
+    { id: 'fsr41', vendor: 'AMD', name: 'FSR 4.1', stage: STAGE.EXPERIMENTAL, note: 'Stable in the 64-bit build' },
     { id: 'dlss5', vendor: 'NVIDIA', name: 'DLSS 5', stage: STAGE.PLANNED }
   ],
 
   /** Platforms for the 64-bit client. */
   platforms64: [
-    { id: 'windows', name: 'Windows', line: 'Native 64-bit client.', stage: STAGE.IN_DEVELOPMENT },
+    {
+      id: 'windows',
+      name: 'Windows',
+      line: 'Native 64-bit build available.',
+      extra: 'Functional Windows build available via the launcher — slightly behind the Linux build in patch updates while development continues.',
+      stage: RELEASE.EARLY_ACCESS
+    },
     {
       id: 'linux',
       name: 'Linux',
       line: 'Natively compiled for Linux.',
-      stage: STAGE.IN_DEVELOPMENT,
+      extra: 'Compiled natively for Linux — does not depend on Wine or Proton. Available via the launcher and actively updated as our primary build.',
+      stage: RELEASE.EARLY_ACCESS,
       highlight: true
     },
-    { id: 'apple', name: 'macOS', line: 'Planned for the future.', stage: STAGE.PLANNED }
+    {
+      id: 'apple',
+      name: 'macOS',
+      line: 'Planned for the future.',
+      extra: 'On the roadmap. Not available yet — no release date announced.',
+      stage: STAGE.PLANNED
+    }
   ],
 
   /** Abra API — queue (notifications) + transactional e-mail. */
